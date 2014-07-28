@@ -316,8 +316,8 @@ def setSecondaryValues(canvas): #for setting values
 def run():
     # create the root and the canvas
     root = Tk()
-    cHeight=1150
-    cWidth=1150
+    cHeight=950
+    cWidth=950
     canvas = Canvas(root, width=cWidth, height=cHeight)
     canvas.pack()
     # Set up canvas data and call init
