@@ -166,7 +166,7 @@ def drawCircles(canvas):
         canvas.create_text(canvas.data.width/2, canvas.data.height/2 - 50, text="Space", font="Times 40", fill=fillV)
     else: 
 
-        angle=(math.pi/2)-math.pi*(canvas.data.clicks)/25
+        angle=(math.pi/2)-math.pi*(canvas.data.clicks)/(canvas.data.numberToGo-1)
 
         cX=(canvas.data.width/2)+(canvas.data.diameter/2)*math.cos(angle)*((-1)**canvas.data.clicks)
         cY=(canvas.data.height/2)-(canvas.data.diameter/2)*math.sin(angle)*((-1)**canvas.data.clicks)
@@ -300,7 +300,7 @@ def setSecondaryValues(canvas): #for setting values
  #########################################################################################################
     canvas.data.timerCounter = 0
  #########################################################################################################
-    canvas.data.numberToGo=26 #number of clicks to do
+    canvas.data.numberToGo=12 #number of clicks to do
     canvas.data.clicks=0
 #########################################################################################################
     canvas.data.start=False #set not to start. Once enter is pressed starts.
