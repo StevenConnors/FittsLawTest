@@ -1,1 +1,0 @@
-gnome-terminal --tab -e 'python "tester.py"' --tab -e 'python "tester.py"' --tab -e 'python "tester.py"'
