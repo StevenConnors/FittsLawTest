@@ -1,1 +1,1 @@
-gnome-terminal --tab -e 'python "client.py"' --tab -e 'python "client.py"' --tab -e 'python "mainFingers.py"'
+gnome-terminal --tab -e 'python "tester.py"' --tab -e 'python "tester.py"' --tab -e 'python "tester.py"'

@@ -188,9 +188,6 @@ def drawStartScreen(canvas):
 
 #create options for which device the user is using
 
-
-
-
 def drawCircles(canvas):
     angle=(math.pi/2)-math.pi*(canvas.data.clicks)/25
 
