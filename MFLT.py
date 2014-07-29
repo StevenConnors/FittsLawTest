@@ -249,7 +249,8 @@ def sectionFinished(canvas):
 
 
 def writeFiles(canvas):
-    savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str("MFLT")
+    path="./userDataMFLT/"
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
@@ -280,7 +281,8 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
-    savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+"MFLTtracking"
+    path="./userDataMFLT/"
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+"MFLTtracking"
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n")

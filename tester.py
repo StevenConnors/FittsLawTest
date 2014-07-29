@@ -216,8 +216,7 @@ def sectionFinished(canvas):
 
 def writeName(canvas):
     path="./userData/"
-    savedTitle=str(canvas.data.name)
-    completeName = os.path.join(path, savedTitle+".txt")         
+    savedTitle="userName"
 
     f=open(savedTitle, 'w')
     f.write(canvas.data.name)
@@ -225,9 +224,7 @@ def writeName(canvas):
 
 def writeFiles(canvas):
     path="./userData/"
-    savedTitle=str(canvas.data.name)+ str(canvas.data.device)+str(canvas.data.configuration)
-
-    completeName = os.path.join(path, savedTitle+".txt")         
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)
 
     f=open(savedTitle, 'w')
 #Find a way to organize data
@@ -250,8 +247,8 @@ def writeFiles(canvas):
 
 def writeGraphFiles(canvas):
     path="./userData/"
-    savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')
-    completeName = os.path.join(path, savedTitle+".txt")         
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')
+
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n\n")
@@ -281,8 +278,8 @@ def checkKeyPressed(x, canvas):
 
 def writeTracking(canvas):
     path="./userData/"
-    savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str(canvas.data.configuration)+str('tracking')
-    completeName = os.path.join(path, savedTitle+".txt")  
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('tracking')
+
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n")
