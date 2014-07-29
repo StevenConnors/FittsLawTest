@@ -37,7 +37,36 @@ def mousePressed(canvas, event):
             canvas.data.error.append(canvas.data.clicks)
             canvas.data.errorMargin.append(errorDel)
 #            print (canvas.da'.ta.clicks, errorX, errorY)
+    else: #so this is for the start screen, when choosing devices
+        mouseButtonPressed(canvas,event)
     redrawAll(canvas)
+
+def mouseButtonPressed(canvas,event):
+    x1=750
+    y1=50
+    x2=780
+    y2=80
+    #mouse
+    if (x1<=event.x<=x2 and y1<=event.y<=y2):
+        canvas.data.circleMouse="green"
+        canvas.data.trackpad=None 
+        canvas.data.fingers=None
+        canvas.data.secondTime=None
+    if (x1<=event.x<=x2 and y1+50<=event.y<=y2+50):
+        canvas.data.circleMouse=None
+        canvas.data.trackpad="green" 
+        canvas.data.fingers=None
+        canvas.data.secondTime=None
+    if (x1<=event.x<=x2 and y1+100<=event.y<=y2+100):
+        canvas.data.circleMouse=None
+        canvas.data.trackpad=None 
+        canvas.data.fingers="green"
+        canvas.data.secondTime=None
+    if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
+        canvas.data.circleMouse=None
+        canvas.data.trackpad=None
+        canvas.data.fingers=None
+        canvas.data.secondTime="green"
 
 def recordTime(canvas):
     elapsed=time.time()-canvas.data.time
@@ -62,6 +91,10 @@ def keyPressed(canvas, event):
     if (canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
         canvas.data.start=True
         canvas.data.startScreen=False
+
+        #set canvas.data.device
+        setDeviceName(canvas)
+
         startClock(canvas)
         canvas.create_text(canvas.data.width/2, canvas.data.height/2, text=str(time.time()-canvas.data.time), font="Times 30")
     elif (canvas.data.start==False and canvas.data.nameSet==False):
@@ -79,8 +112,22 @@ def keyPressed(canvas, event):
 #        print (canvas.data.clicks, event.keysym) #see if a key was pressed
     redrawAll(canvas)
 
+
+def setDeviceName(canvas):
+    if canvas.data.circleMouse:
+        canvas.data.device="mouse"
+    elif canvas.data.trackpad:
+        canvas.data.device="trackpad"
+    elif canvas.data.fingers:
+        canvas.data.device="fingers"
+    else:
+        canvas.data.device="2ndTime"
+
 def startClock(canvas):
     canvas.data.time=time.time()
+
+
+
 
 def timerFired(canvas):
     redrawAll(canvas)
@@ -125,6 +172,25 @@ def drawStartScreen(canvas):
     canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Instructions:\n First, enter your name. Press enter when completed. \n Click the green circle", font="Times 30")
     canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 
+    x1=750
+    y1=50
+    x2=780
+    y2=80
+    canvas.create_rectangle(x1,y1,x2,y2, fill=canvas.data.circleMouse) #mouse    
+    canvas.create_text(x2+5, y1+15, text="Mouse", font="Times 14", anchor="w")
+    canvas.create_rectangle(x1,y1+50,x2,y2+50, fill=canvas.data.trackpad) #trackpad 
+    canvas.create_text(x2+5, y1+65, text="Trackpad", font="Times 14", anchor="w")
+    canvas.create_rectangle(x1,y1+100,x2,y2+100, fill=canvas.data.fingers) #fingers
+    canvas.create_text(x2+5, y1+115, text="Fingers", font="Times 14", anchor="w")
+    canvas.create_rectangle(x1,y1+150,x2,y2+150, fill=canvas.data.secondTime) #2nd time
+    canvas.create_text(x2+5, y1+165, text="2nd Time", font="Times 14", anchor="w")
+
+
+#create options for which device the user is using
+
+
+
+
 def drawCircles(canvas):
     angle=(math.pi/2)-math.pi*(canvas.data.clicks)/25
 
@@ -140,15 +206,21 @@ def drawCircles(canvas):
     canvas.create_oval(x1,y1,x2,y2, fill="green")
 
 def sectionFinished(canvas):
+    if (canvas.data.round==1):
+        writeName(canvas)
     writeFiles(canvas)
     writeGraphFiles(canvas)
     writeTracking(canvas)
     readFile(canvas)
     setSecondaryValues(canvas)
 
+def writeName(canvas):
+    savedTitle=str(canvas.data.name)
+    f=open(savedTitle, 'w')
+    f.write(canvas.data.name)
 
 def writeFiles(canvas):
-    savedTitle=str(canvas.data.name)+str(canvas.data.configuration)
+    savedTitle=str(canvas.data.name)+ str(canvas.data.device)+str(canvas.data.configuration)
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
@@ -168,7 +240,7 @@ def writeFiles(canvas):
 
 
 def writeGraphFiles(canvas):
-    savedTitle=str(canvas.data.name)+str(canvas.data.configuration)+str('graph')
+    savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n\n")
@@ -196,7 +268,7 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
-    savedTitle=str(canvas.data.name)+str(canvas.data.configuration)+str('tracking')
+    savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str(canvas.data.configuration)+str('tracking')
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n")
@@ -248,7 +320,7 @@ def init(canvas):
     canvas.data.circleWidth=10 #filler 
 
     canvas.data.round=0
-    canvas.data.numberOfRounds=4
+    canvas.data.numberOfRounds=3
 
 
 #################################################################################
@@ -264,6 +336,11 @@ def setInitialValues(canvas):
     canvas.data.name=""
     canvas.data.nameSet=False
     canvas.data.startScreen=True #Set to draw the starting screen
+    canvas.data.device=""
+    canvas.data.circleMouse=None
+    canvas.data.trackpad=None 
+    canvas.data.fingers=None
+    canvas.data.secondTime=None
 
 
 def setSecondaryValues(canvas): #for setting values 
@@ -286,12 +363,6 @@ def setSecondaryValues(canvas): #for setting values
     canvas.data.clicks=0
 #########################################################################################################
     canvas.data.start=False #set not to start. Once enter is pressed starts.
-
-
-
-
-
-
 
 
 def run():
