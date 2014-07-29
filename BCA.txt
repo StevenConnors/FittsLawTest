@@ -2,12 +2,12 @@ B
 canvas.data.circleWidth
 58
 canvas.data.diameter
-756
+400
 C
 canvas.data.circleWidth
-24
+19
 canvas.data.diameter
-756
+600
 A
 canvas.data.circleWidth
 133

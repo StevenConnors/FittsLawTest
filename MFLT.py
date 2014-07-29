@@ -10,6 +10,8 @@ import time
 import string
 import datetime
 import tkFileDialog
+import os.path
+
 
 def mousePressed(canvas, event):
     data=canvas.data
@@ -39,9 +41,9 @@ def mousePressed(canvas, event):
 
 
 def mouseButtonPressed(canvas,event):
-    x1=750
+    x1=550
     y1=50
-    x2=780
+    x2=580
     y2=80
     #mouse
     if (x1<=event.x<=x2 and y1<=event.y<=y2):
@@ -182,9 +184,9 @@ def drawStartScreen(canvas):
     canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Instructions:\n First, enter your name. Press enter when completed. \n Click the green circle", font="Times 30")
     canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 
-    x1=750
+    x1=550
     y1=50
-    x2=780
+    x2=580
     y2=80
     canvas.create_rectangle(x1,y1,x2,y2, fill=canvas.data.circleMouse) #mouse    
     canvas.create_text(x2+5, y1+15, text="Mouse", font="Times 14", anchor="w")
@@ -374,8 +376,8 @@ def setSecondaryValues(canvas): #for setting values
 def run():
     # create the root and the canvas
     root = Tk()
-    cHeight=950
-    cWidth=950
+    cHeight=700
+    cWidth=700
     canvas = Canvas(root, width=cWidth, height=cHeight)
     canvas.pack()
     # Set up canvas data and call init

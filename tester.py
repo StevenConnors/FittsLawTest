@@ -14,6 +14,8 @@ from numpy import arange,array,ones#,random,linalg
 from pylab import plot,show
 from scipy import stats
 import matplotlib.pylab as plt
+import os.path
+
 
 def mousePressed(canvas, event):
     data=canvas.data
@@ -42,9 +44,9 @@ def mousePressed(canvas, event):
     redrawAll(canvas)
 
 def mouseButtonPressed(canvas,event):
-    x1=750
+    x1=550
     y1=50
-    x2=780
+    x2=580
     y2=80
     #mouse
     if (x1<=event.x<=x2 and y1<=event.y<=y2):
@@ -172,9 +174,9 @@ def drawStartScreen(canvas):
     canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Instructions:\n First, enter your name. Press enter when completed. \n Click the green circle", font="Times 30")
     canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 
-    x1=750
+    x1=550
     y1=50
-    x2=780
+    x2=580
     y2=80
     canvas.create_rectangle(x1,y1,x2,y2, fill=canvas.data.circleMouse) #mouse    
     canvas.create_text(x2+5, y1+15, text="Mouse", font="Times 14", anchor="w")
@@ -211,13 +213,22 @@ def sectionFinished(canvas):
     readFile(canvas)
     setSecondaryValues(canvas)
 
+
 def writeName(canvas):
+    path="./userData/"
     savedTitle=str(canvas.data.name)
+    completeName = os.path.join(path, savedTitle+".txt")         
+
     f=open(savedTitle, 'w')
     f.write(canvas.data.name)
+    f.close()
 
 def writeFiles(canvas):
+    path="./userData/"
     savedTitle=str(canvas.data.name)+ str(canvas.data.device)+str(canvas.data.configuration)
+
+    completeName = os.path.join(path, savedTitle+".txt")         
+
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
@@ -234,10 +245,13 @@ def writeFiles(canvas):
             str(canvas.data.diameter)+","+str(canvas.data.errorMargin[x])+"\n"
         f.write(stuff)
         #Write body information
+    f.close()
 
 
 def writeGraphFiles(canvas):
+    path="./userData/"
     savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')
+    completeName = os.path.join(path, savedTitle+".txt")         
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n\n")
@@ -250,6 +264,7 @@ def writeGraphFiles(canvas):
         f.write(stuff)
     f.write(str(doAnalysis(canvas)[0])+"\n")
     f.write(str(doAnalysis(canvas)[1])+"\n")
+    f.close()
 
 
 def checkClicked(x,canvas):
@@ -265,7 +280,9 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
+    path="./userData/"
     savedTitle=str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str(canvas.data.configuration)+str('tracking')
+    completeName = os.path.join(path, savedTitle+".txt")  
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n")
@@ -282,6 +299,7 @@ def writeTracking(canvas):
             stuff=stuff+","+str(trajectory[i][1]) #y coordinate
             thing=str(x)+", "+str(stuff)+"\n"
             f.write(thing)
+    f.close()
 
 def openFile(canvas):
     root = Tk()
@@ -365,8 +383,8 @@ def setSecondaryValues(canvas): #for setting values
 def run():
     # create the root and the canvas
     root = Tk()
-    cHeight=950
-    cWidth=950
+    cHeight=700
+    cWidth=700
     canvas = Canvas(root, width=cWidth, height=cHeight)
     canvas.pack()
     # Set up canvas data and call init
