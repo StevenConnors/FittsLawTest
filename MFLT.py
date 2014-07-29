@@ -279,7 +279,7 @@ def createDirectory(canvas):
 
 def writeFiles(canvas):
     path=canvas.data.path
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+".dat"
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
@@ -311,7 +311,7 @@ def checkKeyPressed(x, canvas):
 
 def writeTracking(canvas):
     path=canvas.data.path
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+"MFLTtracking"
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+"MFLTtracking"+".trk"
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n")

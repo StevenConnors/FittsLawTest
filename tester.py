@@ -250,7 +250,7 @@ def writeName(canvas):
 
 def writeFiles(canvas):
     path=canvas.data.path
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+".dat"
 
     f=open(savedTitle, 'w')
 #Find a way to organize data
@@ -273,7 +273,7 @@ def writeFiles(canvas):
 
 def writeGraphFiles(canvas):
     path=canvas.data.path
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')+".grp"
 
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
@@ -304,7 +304,7 @@ def checkKeyPressed(x, canvas):
 
 def writeTracking(canvas):
     path=canvas.data.path
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('tracking')
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('tracking')+".trk"
 
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
