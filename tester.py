@@ -207,23 +207,49 @@ def drawCircles(canvas):
 def sectionFinished(canvas):
     if (canvas.data.round==1):
         writeName(canvas)
+        createDirectory(canvas)
     writeFiles(canvas)
     writeGraphFiles(canvas)
     writeTracking(canvas)
     readFile(canvas)
     setSecondaryValues(canvas)
 
+def createDirectory(canvas):
+    path="./userData/"
+    savedTitle=canvas.data.name
+    i=0
+    value=True
+    while value:
+        if (i==0):
+            if not os.path.exists(path+savedTitle):
+                os.makedirs(path+savedTitle)
+                value=False
+            else:
+                i+=1
+        else:
+            if not os.path.exists(path+savedTitle+str(i)):
+                os.makedirs(path+savedTitle+str(i))
+                value=False
+            else:
+                i+=1
+    if i==0:
+        canvas.data.path=path+savedTitle+"/"
+        canvas.data.path=canvas.data.path.rstrip('\n')
+
+    else:
+        canvas.data.path=path+savedTitle+str(i)+"/"
+        canvas.data.path=canvas.data.path.rstrip('\n')
+
 
 def writeName(canvas):
     path="./userData/"
     savedTitle="userName"
-
     f=open(savedTitle, 'w')
     f.write(canvas.data.name)
     f.close()
 
 def writeFiles(canvas):
-    path="./userData/"
+    path=canvas.data.path
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)
 
     f=open(savedTitle, 'w')
@@ -246,7 +272,7 @@ def writeFiles(canvas):
 
 
 def writeGraphFiles(canvas):
-    path="./userData/"
+    path=canvas.data.path
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')
 
     f=open(savedTitle, 'w')
@@ -277,7 +303,7 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
-    path="./userData/"
+    path=canvas.data.path
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('tracking')
 
     f=open(savedTitle, 'w')
@@ -354,6 +380,7 @@ def setInitialValues(canvas):
     canvas.data.fingers=None
     canvas.data.secondTime=None
 
+    canvas.data.path=""
 
 def setSecondaryValues(canvas): #for setting values 
 ##########################################################################################################

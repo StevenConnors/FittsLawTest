@@ -233,23 +233,52 @@ def drawCircles(canvas):
         y2=cY+canvas.data.circleWidth/2
         canvas.create_oval(x1,y1,x2,y2, fill="green")
 
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+
 def sectionFinished(canvas):
+    if (canvas.data.round==1):
+        createDirectory(canvas)
     writeFiles(canvas)
     writeTracking(canvas)
     readFile(canvas)
     setSecondaryValues(canvas)
 
+def createDirectory(canvas):
+    path="./userDataMFLT/"
+    savedTitle=canvas.data.name
+    i=0
+    value=True
+    while value:
+        if (i==0):
+            if not os.path.exists(path+savedTitle):
+                os.makedirs(path+savedTitle)
+                value=False
+            else:
+                i+=1
+        else:
+            if not os.path.exists(path+savedTitle+str(i)):
+                os.makedirs(path+savedTitle+str(i))
+                value=False
+            else:
+                i+=1
+    if i==0:
+        canvas.data.path=path+savedTitle+"/"
+        canvas.data.path=canvas.data.path.rstrip('\n')
 
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
+    else:
+        canvas.data.path=path+savedTitle+str(i)+"/"
+        canvas.data.path=canvas.data.path.rstrip('\n')
+
+
 
 
 def writeFiles(canvas):
-    path="./userDataMFLT/"
+    path=canvas.data.path
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)
     f=open(savedTitle, 'w')
 #Find a way to organize data
@@ -281,7 +310,7 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
-    path="./userDataMFLT/"
+    path=canvas.data.path
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+"MFLTtracking"
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
@@ -344,6 +373,7 @@ def setInitialValues(canvas):
     canvas.data.trackpad=None 
     canvas.data.fingers=None
     canvas.data.secondTime=None
+    canvas.data.path=""
 
 
 
