@@ -102,6 +102,8 @@ def keyPressed(canvas, event):
     elif (canvas.data.start==False and canvas.data.nameSet==False):
         if event.keysym in string.ascii_letters:
             canvas.data.name=canvas.data.name+event.keysym
+        elif event.keysym in string.digits:
+            canvas.data.name=canvas.data.name+event.keysym
         elif event.keysym=="space":
             canvas.data.name=canvas.data.name+" "
         elif event.keysym=="BackSpace":
@@ -250,7 +252,7 @@ def writeName(canvas):
 
 def writeFiles(canvas):
     path=canvas.data.directoryPath
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.name)+str(canvas.data.name)+".dat"
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+".dat"
 
     f=open(savedTitle, 'w')
 #Find a way to organize data
