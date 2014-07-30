@@ -233,12 +233,12 @@ def createDirectory(canvas):
             else:
                 i+=1
     if i==0:
-        canvas.data.path=path+savedTitle+"/"
-        canvas.data.path=canvas.data.path.rstrip('\n')
+        canvas.data.directoryPath=path+savedTitle+"/"
+        canvas.data.directoryPath=canvas.data.directoryPath.rstrip('\n')
 
     else:
-        canvas.data.path=path+savedTitle+str(i)+"/"
-        canvas.data.path=canvas.data.path.rstrip('\n')
+        canvas.data.directoryPath=path+savedTitle+str(i)+"/"
+        canvas.data.directoryPath=canvas.data.directoryPath.rstrip('\n')
 
 
 def writeName(canvas):
@@ -249,8 +249,8 @@ def writeName(canvas):
     f.close()
 
 def writeFiles(canvas):
-    path=canvas.data.path
-    savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+".dat"
+    path=canvas.data.directoryPath
+    savedTitle=path+str(canvas.data.name)+str(canvas.data.name)+str(canvas.data.name)+".dat"
 
     f=open(savedTitle, 'w')
 #Find a way to organize data
@@ -272,7 +272,7 @@ def writeFiles(canvas):
 
 
 def writeGraphFiles(canvas):
-    path=canvas.data.path
+    path=canvas.data.directoryPath
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('graph')+".grp"
 
     f=open(savedTitle, 'w')
@@ -303,7 +303,7 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
-    path=canvas.data.path
+    path=canvas.data.directoryPath
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+str('tracking')+".trk"
 
     f=open(savedTitle, 'w')
@@ -380,7 +380,7 @@ def setInitialValues(canvas):
     canvas.data.fingers=None
     canvas.data.secondTime=None
 
-    canvas.data.path=""
+    canvas.data.directoryPath=""
 
 def setSecondaryValues(canvas): #for setting values 
 ##########################################################################################################
