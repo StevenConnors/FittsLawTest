@@ -27,6 +27,7 @@ def mousePressed(canvas, event):
             canvas.data.listcY.append(canvas.data.centerY)
 
             canvas.data.errorMargin.append(0)
+            canvas.data.errorClicks=[]
 
             canvas.data.clicks+=1
             recordTime(canvas)
@@ -38,6 +39,8 @@ def mousePressed(canvas, event):
             errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
             canvas.data.error.append(canvas.data.clicks)
             canvas.data.errorMargin.append(errorDel)
+
+            canvas.data.errorClicks.append([event.x,event.y])
 #            print (canvas.da'.ta.clicks, errorX, errorY)
     else: #so this is for the start screen, when choosing devices
         mouseButtonPressed(canvas,event)
@@ -150,6 +153,7 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
         if (canvas.data.start): #if started
             if canvas.data.clicks<canvas.data.numberToGo:  #while there's more circles to click
                 drawCircles(canvas)
+                drawError(canvas)
             else: #round finished 
                 canvas.data.round+=1
                 canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
@@ -205,6 +209,16 @@ def drawCircles(canvas):
     x2=cX+canvas.data.circleWidth/2
     y2=cY+canvas.data.circleWidth/2
     canvas.create_oval(x1,y1,x2,y2, fill="green")
+
+def drawError(canvas):
+    for i in xrange(len(canvas.data.errorClicks)):
+        cX=canvas.data.errorClicks[i][0]
+        cY=canvas.data.errorClicks[i][1]
+        x1=cX-2
+        y1=cY-2
+        x2=cX+2
+        y2=cY+2
+        canvas.create_oval(x1,y1,x2,y2, fill="red")
 
 def sectionFinished(canvas):
     if (canvas.data.round==1):
@@ -394,6 +408,7 @@ def setSecondaryValues(canvas): #for setting values
 ##############################################################################################################
     canvas.data.error=[]
     canvas.data.errorMargin=[]
+    canvas.data.errorClicks=[]
     canvas.data.keyPressed=[]
     canvas.data.listcX=[]
     canvas.data.listcY=[]
