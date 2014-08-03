@@ -29,6 +29,8 @@ def mousePressed(canvas, event):
             canvas.data.errorMargin.append(0)
             canvas.data.errorClicks=[]
 
+            canvas.data.errorMade=0
+
             canvas.data.clicks+=1
             recordTime(canvas)
             resetPath(canvas)
@@ -37,11 +39,13 @@ def mousePressed(canvas, event):
             errorY=event.y-canvas.data.centerY
             value=(errorX**2)+(errorY**2)
             errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
-            canvas.data.error.append(canvas.data.clicks)
-            canvas.data.errorMargin.append(errorDel)
+            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+                canvas.data.error.append(canvas.data.clicks)
+                canvas.data.errorMargin.append(errorDel)
+                print canvas.data.errorMargin
+                canvas.data.errorClicks.append([event.x,event.y])
+                canvas.data.errorMade=1
 
-            canvas.data.errorClicks.append([event.x,event.y])
-#            print (canvas.da'.ta.clicks, errorX, errorY)
     else: #so this is for the start screen, when choosing devices
         mouseButtonPressed(canvas,event)
     redrawAll(canvas)
@@ -409,6 +413,7 @@ def setSecondaryValues(canvas): #for setting values
     canvas.data.error=[]
     canvas.data.errorMargin=[]
     canvas.data.errorClicks=[]
+    canvas.data.errorMade=0 
     canvas.data.keyPressed=[]
     canvas.data.listcX=[]
     canvas.data.listcY=[]
