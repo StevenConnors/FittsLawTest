@@ -17,14 +17,19 @@ def mousePressed(canvas, event):
     data=canvas.data
     if data.start:
 #        print data.clicks
+
+        if (canvas.data.errorMade==0 and canvas.data.pressButtons=False): #if first time clicking at a circle,
+            canvas.data.listX.append(event.x)
+            canvas.data.listY.append(event.y)
+
         if ( ((event.x-data.centerX)**2)+((event.y-data.centerY)**2)<\
                 ((data.circleWidth/2)**2) ):
             canvas.data.listcX.append(canvas.data.centerX)
             canvas.data.listcY.append(canvas.data.centerY)
-
-            canvas.data.errorMargin.append(0)
+            
+            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+                canvas.data.errorMargin.append(0)
             canvas.data.errorClicks=[]
-
             canvas.data.errorMade=0
 
             canvas.data.clicks+=1
@@ -295,13 +300,14 @@ def writeFiles(canvas):
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n\n")
         #Header: subject name, configuration file used, date, 
-    f.write("Target#, time, targetX, targetY, clicked, keyPressed, condition (W&D), errorMargin\n")
+    f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, condition (W&D), errorMargin\n")
         #write Body Header 
     for x in xrange(canvas.data.numberToGo):
         clicked=checkClicked(x, canvas)
         key=checkKeyPressed(x,canvas)
         stuff= str(x)+","+str(canvas.data.times[x])+","+\
             str(canvas.data.listcX[x])+","+str(canvas.data.listcY[x])+","+\
+            str(canvas.data.listX[x])+","+str(canvas.data.listY[x])+","+\
             clicked+","+key+","+str(canvas.data.circleWidth)+","+\
             str(canvas.data.diameter)+","+str(canvas.data.errorMargin[x])+"\n"
         f.write(stuff)
@@ -403,6 +409,10 @@ def setSecondaryValues(canvas): #for setting values
     canvas.data.keyPressed=[]
     canvas.data.listcX=[]
     canvas.data.listcY=[]
+
+    canvas.data.listX=[]#list of where user clicked X axis
+    canvas.data.listY=[] #list of where user clicked Y axis
+
  #########################################################################################################
     canvas.data.timerCounter = 0
  #########################################################################################################
