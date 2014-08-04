@@ -275,9 +275,9 @@ def writeFiles(canvas):
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
-    f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n\n")
+    f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
         #Header: subject name, configuration file used, date, 
-    f.write("Target#, time, targetX, targetY, clicked, keyPressed, condition (W&D), errorMargin\n")
+    f.write("Target#, time, targetX, targetY, clicked, keyPressed, width, distance, errorMargin\n")
         #write Body Header 
     for x in xrange(canvas.data.numberToGo):
         clicked=checkClicked(x, canvas)
