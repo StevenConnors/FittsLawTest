@@ -21,10 +21,15 @@ def mousePressed(canvas, event):
                 ((data.circleWidth/2)**2) ):
             canvas.data.listcX.append(canvas.data.centerX)
             canvas.data.listcY.append(canvas.data.centerY)
+
+            canvas.data.errorMargin.append(0)
+            canvas.data.errorClicks=[]
+
+            canvas.data.errorMade=0
+
             canvas.data.clicks+=1
             recordTime(canvas)
             resetPath(canvas)
-
 #Eedit: after a successful click, raise a flg forcing a button press
             canvas.data.pressButtons=True
 #this time.time is to ignore the time to press keys:
@@ -33,8 +38,13 @@ def mousePressed(canvas, event):
         else: #clicked outside of the circle
             errorX=event.x-canvas.data.centerX
             errorY=event.y-canvas.data.centerY
-            canvas.data.error.append(canvas.data.clicks)
-#            print (canvas.da'.ta.clicks, errorX, errorY)
+            value=(errorX**2)+(errorY**2)
+            errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
+            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+                canvas.data.error.append(canvas.data.clicks)
+                canvas.data.errorMargin.append(errorDel)
+                canvas.data.errorClicks.append([event.x,event.y])
+                canvas.data.errorMade=1
     else: #so this is for the start screen, when choosing devices
         mouseButtonPressed(canvas,event)
     redrawAll(canvas)
@@ -267,25 +277,25 @@ def createDirectory(canvas):
             else:
                 i+=1
     if i==0:
-        canvas.data.path=path+savedTitle+"/"
-        canvas.data.path=canvas.data.path.rstrip('\n')
+        canvas.data.directoryPath=path+savedTitle+"/"
+        canvas.data.directoryPath=canvas.data.directoryPath.rstrip('\n')
 
     else:
-        canvas.data.path=path+savedTitle+str(i)+"/"
-        canvas.data.path=canvas.data.path.rstrip('\n')
+        canvas.data.directoryPath=path+savedTitle+str(i)+"/"
+        canvas.data.directoryPath=canvas.data.directoryPath.rstrip('\n')
 
 
 
 
 def writeFiles(canvas):
-    path=canvas.data.path
+    path=canvas.data.directoryPath
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+".dat"
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration)+","+date+"\n\n")
         #Header: subject name, configuration file used, date, 
-    f.write("Target#, time, targetX, targetY, clicked, keyPressed, condition (W&D)\n")
+    f.write("Target#, time, targetX, targetY, clicked, keyPressed, condition (W&D), errorMargin\n")
         #write Body Header 
     for x in xrange(canvas.data.numberToGo):
         clicked=checkClicked(x, canvas)
@@ -293,9 +303,10 @@ def writeFiles(canvas):
         stuff= str(x)+","+str(canvas.data.times[x])+","+\
             str(canvas.data.listcX[x])+","+str(canvas.data.listcY[x])+","+\
             clicked+","+key+","+str(canvas.data.circleWidth)+","+\
-            str(canvas.data.diameter)+"\n"
+            str(canvas.data.diameter)+","+str(canvas.data.errorMargin[x])+"\n"
         f.write(stuff)
         #Write body information
+    f.close()
 
 def checkClicked(x,canvas):
     for i in xrange(len(canvas.data.error)):
@@ -310,7 +321,7 @@ def checkKeyPressed(x, canvas):
     return "0"
 
 def writeTracking(canvas):
-    path=canvas.data.path
+    path=canvas.data.directoryPath
     savedTitle=path+str(canvas.data.name)+str(canvas.data.device)+str(canvas.data.configuration)+"MFLTtracking"+".trk"
     f=open(savedTitle, 'w')
     date = str(datetime.date.today())
@@ -386,6 +397,9 @@ def setSecondaryValues(canvas): #for setting values
     canvas.data.allPathTimes=[]
 ##############################################################################################################
     canvas.data.error=[]
+    canvas.data.errorMargin=[]
+    canvas.data.errorClicks=[]
+    canvas.data.errorMade=0 
     canvas.data.keyPressed=[]
     canvas.data.listcX=[]
     canvas.data.listcY=[]
