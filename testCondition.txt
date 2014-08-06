@@ -1,0 +1,15 @@
+A
+canvas.data.circleWidth
+40
+canvas.data.diameter
+150
+B
+canvas.data.circleWidth
+60
+canvas.data.diameter
+150
+C
+canvas.data.circleWidth
+80
+canvas.data.diameter
+150
