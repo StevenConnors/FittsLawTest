@@ -19,7 +19,8 @@ if a:
             header[data['header'][2][i].strip()]=i
         
         fittsData={'movementTime':[],'error':[],'width':[],'distance':[],'clickX':[],'clickY':[],'wrongClick':[],\
-                   'targetX':[],'targetY':[],'dist2Tar':[],'movDistance':[]}
+                   'targetX':[],'targetY':[],'dist2Tar':[],'movDistance':[],\
+                   'outliers':[]}
         
         
         
@@ -50,38 +51,66 @@ if a:
                 fittsData['dist2Tar'].append(np.linalg.norm(a-b))
                 
                 if i>0:
-                    if fittsData['wrongClick'][i-1]!=1:
-                        p=[fittsData['clickX'][i-1],fittsData['clickY'][i-1]]
-                        p=np.array(p)
-                        fittsData['movDistance'].append(np.linalg.norm(a-p))
-            
+                    p=[fittsData['clickX'][i-1],fittsData['clickY'][i-1]]
+                    p=np.array(p)
+                    fittsData['movDistance'].append(np.linalg.norm(a-p))
+                    
+                else:
+                    fittsData['movDistance'].append(-1)
+            else:
+                fittsData['movDistance'].append(-1)
             
         we=4.133*np.std(fittsData['dist2Tar'])
-        de=np.mean(fittsData['movDistance'])
-            
+        
+#         de=np.mean(fittsData['movDistance'])
+        de=[fittsData['movDistance'][i] for i in range(len(fittsData['movDistance'])) if fittsData['movDistance'][i]!=-1]
+        meanDe=np.mean(de)
+        stdDistance=np.std(de)
+        
+        mvt=[fittsData['movementTime'][i] for i in range(len(fittsData['wrongClick'])) if fittsData['wrongClick'][i]==0]
+        meanMvt=np.mean(mvt)
+        stdMvt=np.std(mvt)
+        
+        #Outlier Detection
+        outlier=[0 for i in range(len(fittsData['movementTime']))]
+        for i in range(len(fittsData['movementTime'])):
+            if fittsData['movDistance'][i]!=-1:
+                if np.abs(fittsData['movementTime'][i]-meanMvt)>=3*stdMvt or \
+                np.abs(fittsData['movDistance'][i]-meanDe)>=3*stdDistance:
+                    outlier[i]=1
+                    print(fittsData['movDistance'][i],fittsData['movementTime'][i])
+                    print(meanDe,stdDistance,meanMvt,stdMvt)
+                else:
+                    outlier[i]=0
+            else:
+                outlier[i]=1
+                
+        fittsData['outliers']=outlier
+        IDe=[]
+        index=[]
         #Fitts law coefficients
         for i in range(len(fittsData['movementTime'])):
-            if fittsData['wrongClick']!=1:
+            if fittsData['outliers'][i]!=1:
                 
                 Y.append(fittsData['movementTime'][i])
     #             dist=fittsData['distance'][i]
     #             width=fittsData['width'][i]
-                dist=de
+                dist=meanDe
                 width=we
                 
                 #1 is added to calculate the intercept
                 X.append([1,np.log2(dist/width+1)])
+                IDe.append(np.log2(dist/width+1))
+                index.append(i)
                 
     Y=np.array(Y)
     X=np.array(X)
-        
-        
     Xt=np.transpose(X)
-    IDe=np.log2(dist/width+1)
+    
     c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
     print(c)
     IP=1/c[1]
-    print('IP %.4f, IDe %.4f'%(IP,IDe))
+    print('IP %.4f'%(IP))
         
         
         
