@@ -13,7 +13,9 @@ Y=[]
 a=tkFileDialog.askopenfiles('r')
 if a:
     for file in a:
+        print file.name
         data=dr.csvReader(file.name, ',', 4)
+        print data
         header={}
         for i in range(len(data['header'][2])):
             header[data['header'][2][i].strip()]=i
@@ -103,8 +105,9 @@ if a:
                 IDe.append(np.log2(dist/width+1))
                 index.append(i)
 
-
-                
+        print"IDE"
+        print IDe
+        print"IDE"
                 
     Y=np.array(Y)
     X=np.array(X)

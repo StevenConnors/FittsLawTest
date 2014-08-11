@@ -7,7 +7,7 @@ import os
 
 allFiles= []
 
-#for root, dirs, files in os.walk("/Users/Steven/Documents/FittsLawTest/userData/"):
+for root, dirs, files in os.walk("/Users/Steven/Documents/FittsLawTest/userData/"):
 	for file in files:
 		if file.endswith(".dat"):
 			 allFiles.append(os.path.join(root, file))
@@ -16,10 +16,12 @@ print allFiles
 X=[]
 Y=[]
 averageMT=[]
-
+allIDe=[]
+TP=0
 
 for file in allFiles:
-	data=dr.csvReader(file.name, ',', 4)
+	#print file
+	data=dr.csvReader(file, ',', 4)
 	header={}
 	for i in range(len(data['header'][2])):
 		header[data['header'][2][i].strip()]=i
@@ -84,8 +86,8 @@ for file in allFiles:
 			if np.abs(fittsData['movementTime'][i]-meanMvt)>=3*stdMvt or \
 			np.abs(fittsData['movDistance'][i]-meanDe)>=3*stdDistance:
 				outlier[i]=1
-				print(fittsData['movDistance'][i],fittsData['movementTime'][i])
-				print(meanDe,stdDistance,meanMvt,stdMvt)
+#				print(fittsData['movDistance'][i],fittsData['movementTime'][i])
+#				print(meanDe,stdDistance,meanMvt,stdMvt)
 			else:
 				outlier[i]=0
 		else:
@@ -117,19 +119,25 @@ for file in allFiles:
 	averageMT.append(MTsum)
 	##Get the average MT for one round of recording
 
+	#IDe
+	allIDe.append(IDe[0])
+
+
+for j in xrange(len(allFiles)):
+	TP+=1.0*allIDe[j]/averageMT[j]
+TP=1.0*TP/len(allFiles)
+
+print TP
+
 
 			
-Y=np.array(Y)
-X=np.array(X)
-Xt=np.transpose(X)
+#Y=np.array(Y)
+#X=np.array(X)
+#Xt=np.transpose(X)
 
-
-c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
-print(c)
-IP=1/c[1]
-print('IP %.4f'%(IP))
+#c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
+#print(c)
+#IP=1/c[1]
+#print('IP %.4f'%(IP))
         
 
-
-#data gets refreshed every time
-	
