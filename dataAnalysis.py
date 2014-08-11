@@ -102,6 +102,9 @@ if a:
                 X.append([1,np.log2(dist/width+1)])
                 IDe.append(np.log2(dist/width+1))
                 index.append(i)
+
+
+                
                 
     Y=np.array(Y)
     X=np.array(X)
@@ -112,5 +115,4 @@ if a:
     IP=1/c[1]
     print('IP %.4f'%(IP))
         
-        
-        
+
