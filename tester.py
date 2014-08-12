@@ -93,14 +93,16 @@ def resetPath(canvas):
     canvas.data.pathTimes=[]
 #    print canvas.data.trajectories
 
+
 def motion(canvas, event): #store in a list and then delete lk hlaf
-    if canvas.data.path==[] and canvas.data.start:
-        canvas.data.time=time.time()
     if canvas.data.start: 
         x, y = event.x, event.y
         canvas.data.path.append((x,y))
         elapsed=time.time()-canvas.data.time
         canvas.data.pathTimes.append(elapsed)
+
+def startClock(canvas):
+    canvas.data.time = time.time()
 
 def keyPressed(canvas, event):
     if (canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
@@ -109,6 +111,7 @@ def keyPressed(canvas, event):
 
         #set canvas.data.device
         setDeviceName(canvas)
+        startClock(canvas)
 
     elif (canvas.data.start==False and canvas.data.nameSet==False):
         if event.keysym in string.ascii_letters:
