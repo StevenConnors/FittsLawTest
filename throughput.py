@@ -27,7 +27,7 @@ if filesPath:
     averageMT=[]
     allIDe=[]
     TP=0
-    
+    errorRate=[]
     for file in allFiles:
     	#print file
     	data=dr.csvReader(file, ',', 4)
@@ -103,6 +103,7 @@ if filesPath:
     			outlier[i]=1
     			
     	fittsData['outliers']=outlier
+        errorRate.append(1.0*np.sum(outlier)/len(outlier))
     	IDe=[]
     	index=[]
     	#Fitts law coefficients
@@ -136,7 +137,10 @@ if filesPath:
     	TP+=1.0*allIDe[j]/averageMT[j]
     TP=1.0*TP/len(allFiles)
     
+    print 'Throughput'
     print TP
+    print 'Error rate'
+    print np.mean(errorRate)
     
     
     			
