@@ -112,7 +112,6 @@ def keyPressed(canvas, event):
         #set canvas.data.device
         setDeviceName(canvas)
         startClock(canvas)
-        canvas.create_text(canvas.data.width/2, canvas.data.height/2, text=str(time.time()-canvas.data.time), font="Times 30")
 
 
     elif (canvas.data.start and canvas.data.pressButtons):

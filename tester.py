@@ -94,12 +94,13 @@ def resetPath(canvas):
 #    print canvas.data.trajectories
 
 def motion(canvas, event): #store in a list and then delete lk hlaf
+    if canvas.data.path==[] and canvas.data.start:
+        canvas.data.time=time.time()
     if canvas.data.start: 
         x, y = event.x, event.y
         canvas.data.path.append((x,y))
         elapsed=time.time()-canvas.data.time
         canvas.data.pathTimes.append(elapsed)
-
 
 def keyPressed(canvas, event):
     if (canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
@@ -109,8 +110,6 @@ def keyPressed(canvas, event):
         #set canvas.data.device
         setDeviceName(canvas)
 
-        startClock(canvas)
-        canvas.create_text(canvas.data.width/2, canvas.data.height/2, text=str(time.time()-canvas.data.time), font="Times 30")
     elif (canvas.data.start==False and canvas.data.nameSet==False):
         if event.keysym in string.ascii_letters:
             canvas.data.name=canvas.data.name+event.keysym
@@ -138,9 +137,6 @@ def setDeviceName(canvas):
         canvas.data.device="fingers"
     else:
         canvas.data.device="2ndTime"
-
-def startClock(canvas):
-    canvas.data.time=time.time()
 
 
 
@@ -206,6 +202,7 @@ def drawStartScreen(canvas):
 #create options for which device the user is using
 
 def drawCircles(canvas):
+
     angle=(math.pi/2)-math.pi*(canvas.data.clicks)/25
 
     cX=(canvas.data.width/2)+(canvas.data.diameter/2)*math.cos(angle)*((-1)**canvas.data.clicks)
@@ -268,7 +265,7 @@ def createDirectory(canvas):
 
 def writeName(canvas):
     path="./userData/"
-    savedTitle="userName"
+    savedTitle="userName.txt"
     f=open(savedTitle, 'w')
     f.write(canvas.data.name)
     f.close()
@@ -436,6 +433,7 @@ def setSecondaryValues(canvas): #for setting values
 #########################################################################################################
     canvas.data.start=False #set not to start. Once enter is pressed starts.
 
+    canvas.data.time=0
 
 def run():
     # create the root and the canvas
