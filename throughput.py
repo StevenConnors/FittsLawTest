@@ -7,7 +7,15 @@ import os
 
 allFiles= []
 
-for root, dirs, files in os.walk("/Users/Steven/Documents/FittsLawTest/userData/"):
+tkObj=Tkinter.Tk()
+tkObj.file_opt = options = {}
+
+X=[]
+Y=[]
+  
+filesPath=tkFileDialog.askdirectory()
+
+for root, dirs, files in os.walk(filesPath):
 	for file in files:
 		if file.endswith(".dat"):
 			 allFiles.append(os.path.join(root, file))
