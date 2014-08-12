@@ -121,7 +121,13 @@ if filesPath:
     			IDe.append(np.log2(dist/width+1))
     			index.append(i)
     
+    
     	##Get the average MT for one round of recording
+        # Julian :     -Add the regression part to the output of this code
+        #              -Take out outliers from the movement time calculation
+        
+        
+        
     	MTsum=0
     	for i in xrange(len(fittsData['movementTime'])):
     		MTsum+=fittsData['movementTime'][i]

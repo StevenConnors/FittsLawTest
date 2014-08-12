@@ -13,9 +13,9 @@ Y=[]
 a=tkFileDialog.askopenfiles('r')
 if a:
     for file in a:
-        print file.name
+#         print file.name
         data=dr.csvReader(file.name, ',', 4)
-        print data
+#         print data
         header={}
         for i in range(len(data['header'][2])):
             header[data['header'][2][i].strip()]=i
@@ -80,8 +80,8 @@ if a:
                 if np.abs(fittsData['movementTime'][i]-meanMvt)>=3*stdMvt or \
                 np.abs(fittsData['movDistance'][i]-meanDe)>=3*stdDistance:
                     outlier[i]=1
-                    print(fittsData['movDistance'][i],fittsData['movementTime'][i])
-                    print(meanDe,stdDistance,meanMvt,stdMvt)
+#                     print(fittsData['movDistance'][i],fittsData['movementTime'][i])
+#                     print(meanDe,stdDistance,meanMvt,stdMvt)
                 else:
                     outlier[i]=0
             else:
@@ -105,9 +105,9 @@ if a:
                 IDe.append(np.log2(dist/width+1))
                 index.append(i)
 
-        print"IDE"
-        print IDe
-        print"IDE"
+#         print"IDE"
+#         print IDe
+#         print"IDE"
                 
     Y=np.array(Y)
     X=np.array(X)
