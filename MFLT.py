@@ -356,7 +356,7 @@ def openFile(canvas):
 def readFile(canvas):
     with open(canvas.data.condition) as f:
         for x in xrange(canvas.data.round+1):
-            canvas.data.configuration=str(f.readline())
+            canvas.data.configuration=str(f.readline()).rstrip()
             if canvas.data.configuration=="":
                 break
             f.readline()
