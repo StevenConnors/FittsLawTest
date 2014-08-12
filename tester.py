@@ -25,7 +25,6 @@ def mousePressed(canvas, event):
         if (canvas.data.errorMade==0): #if first time clicking at a circle,
             canvas.data.listX.append(event.x)
             canvas.data.listY.append(event.y)
-
         if ( ((event.x-data.centerX)**2)+((event.y-data.centerY)**2)<\
                 ((data.circleWidth/2)**2) ):
             canvas.data.listcX.append(canvas.data.centerX)
@@ -86,12 +85,13 @@ def recordTime(canvas):
     elapsed=time.time()-canvas.data.time
     canvas.data.times.append(elapsed)    
 
+    canvas.data.homingTime=time.time()
+
 def resetPath(canvas):
     canvas.data.trajectories.append(canvas.data.path)
     canvas.data.allPathTimes.append(canvas.data.pathTimes)
     canvas.data.path=[]
     canvas.data.pathTimes=[]
-#    print canvas.data.trajectories
 
 
 def motion(canvas, event): #store in a list and then delete lk hlaf
@@ -100,9 +100,14 @@ def motion(canvas, event): #store in a list and then delete lk hlaf
         canvas.data.path.append((x,y))
         elapsed=time.time()-canvas.data.time
         canvas.data.pathTimes.append(elapsed)
+        if canvas.data.homingTime!=0:
+            canvas.data.homingTimes.append(time.time()-canvas.data.homingTime)
+            canvas.data.homingTime=0
+
 
 def startClock(canvas):
     canvas.data.time = time.time()
+    canvas.data.homingTime=time.time()
 
 def keyPressed(canvas, event):
     if (canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
@@ -282,8 +287,9 @@ def writeFiles(canvas):
     date = str(datetime.date.today())
     f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
         #Header: subject name, configuration file used, date, 
-    f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin\n")
+    f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time\n")
         #write Body Header 
+    canvas.data.times= modifiedTimes(canvas)
     for x in xrange(canvas.data.numberToGo):
         clicked=checkClicked(x, canvas)
         key=checkKeyPressed(x,canvas)
@@ -291,10 +297,20 @@ def writeFiles(canvas):
             str(canvas.data.listcX[x])+","+str(canvas.data.listcY[x])+","+\
             str(canvas.data.listX[x])+","+str(canvas.data.listY[x])+","+\
             clicked+","+key+","+str(canvas.data.circleWidth)+","+\
-            str(canvas.data.diameter)+","+str(canvas.data.errorMargin[x])+"\n"
+            str(canvas.data.diameter)+","+str(canvas.data.errorMargin[x])+\
+            ","+str(canvas.data.homingTimes[x])+"\n"
         f.write(stuff)
         #Write body information
     f.close()
+
+def modifiedTimes(canvas):
+    newTimes=[]
+    for i in xrange(canvas.data.numberToGo):
+        time= canvas.data.times[i]
+        for j in xrange(i+1):
+            time -= canvas.data.homingTimes[j]
+        newTimes.append(time)
+    return newTimes
 
 
 def writeGraphFiles(canvas):
@@ -379,7 +395,6 @@ def doAnalysis(canvas):
     return stats.linregress(xi,y)
 
 def init(canvas):
-
     canvas.data.diameter=30 #Filler in case of error
     canvas.data.circleWidth=10 #filler 
 
@@ -437,6 +452,11 @@ def setSecondaryValues(canvas): #for setting values
     canvas.data.start=False #set not to start. Once enter is pressed starts.
 
     canvas.data.time=0
+
+    canvas.data.homingTime=0
+    canvas.data.homingTimes=[]
+
+
 
 def run():
     # create the root and the canvas
