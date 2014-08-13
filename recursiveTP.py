@@ -177,7 +177,7 @@ if filesPath:
 	f=open(savedTitle, 'w')
 	f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate\n")
 	for x in xrange(len(TPList)):
-		stuff = FileList[x]+","+str(TPList[x])+","+str(IPList[x])+","+str(LinList[x][0])+","+str(LinList[x][1])+","+str(ErrorList[x])+"\n"
+		stuff = FileList[x]+","+'%.4f'%TPList[x]+","+'%.4f'%IPList[x]+","+'%.4f'%LinList[x][0]+","+'%.4f'%LinList[x][1]+","+'%.4f'%ErrorList[x]+"\n"
 		f.write(stuff)
 	f.close()
 
