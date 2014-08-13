@@ -150,17 +150,17 @@ if filesPath:
 		print TP
 		print 'Error rate'
 		print np.mean(errorRate)
-	
+
 		Y=np.array(Y)
-    	X=np.array(X)
-    	Xt=np.transpose(X)
-    
-    	c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
-    	print "i forgot what this is"
-    	print(c)
-    	IP=1/c[1]
-    	print('IP %.4f'%(IP))
-        
+		X=np.array(X)
+		Xt=np.transpose(X)
+
+		c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
+		print "i forgot what this is"
+		print(c)
+		IP=1/c[1]
+		print('IP %.4f'%(IP))
+
 
 
 
