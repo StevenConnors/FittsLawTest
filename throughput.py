@@ -140,20 +140,20 @@ if filesPath:
         TP+=1.0*allIDe[j]/averageMT[j]
     TP=1.0*TP/len(allFiles)
     
-    print 'Throughput'
-    print TP
-    print 'Error rate'
-    print np.mean(errorRate)
-          
+    print('Throughput %.4f'%(TP))
+    print('Error Rate %.4f'%(np.mean(errorRate)))
+
     Y=np.array(Y)
     X=np.array(X)
     Xt=np.transpose(X)
-    
+
     c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
-    print "i forgot what this is"
+    print "Linear Regression"
     print(c)
     IP=1/c[1]
     print('IP %.4f'%(IP))
+
+
         
                 
     #Y=np.array(Y)
