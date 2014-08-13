@@ -20,8 +20,14 @@ if filesPath:
 		for file in files:
 			if file.endswith(".dat"):
 				 allFiles.append(os.path.join(root, file))
-	
-	
+
+	FileList=[]
+	TPList=[]
+	IPList=[]
+	LinList=[]
+	ErrorList=[]
+
+
 	for directory in xrange(len(allFiles)/3):
 		
 		X=[]
@@ -139,13 +145,14 @@ if filesPath:
 			#IDe
 			allIDe.append(IDe[0])
 
-		#record that data
-
 		for j in xrange(3):
 			TP+=1.0*allIDe[j]/averageMT[j]
 		TP=1.0*TP/3 #div 3 cause the number of files
 
-		print file
+		head, tail = os.path.split(file)
+		head2, target = os.path.split(head)
+		print target
+
 		print('Throughput %.4f'%(TP))
 		print('Error Rate %.4f'%(np.mean(errorRate)))
 
@@ -159,18 +166,19 @@ if filesPath:
 		IP=1/c[1]
 		print('IP %.4f'%(IP))
 
+		FileList.append(target)
+		TPList.append(TP)
+		ErrorList.append(np.mean(errorRate))
+		LinList.append(c)
+		IPList.append(IP)
+
+	path="./TPs/"
+	savedTitle=path+"allTPs.dat"
+	f=open(savedTitle, 'w')
+	f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate\n")
+	for x in xrange(len(TPList)):
+		stuff = FileList[x]+","+str(TPList[x])+","+str(IPList[x])+","+str(LinList[x][0])+","+str(LinList[x][1])+","+str(ErrorList[x])+"\n"
+		f.write(stuff)
+	f.close()
 
 
-
-
-				
-	#Y=np.array(Y)
-	#X=np.array(X)
-	#Xt=np.transpose(X)
-	
-	#c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
-	#print(c)
-	#IP=1/c[1]
-	#print('IP %.4f'%(IP))
-			
-	
