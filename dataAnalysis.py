@@ -94,7 +94,7 @@ if a:
         for i in range(len(fittsData['movementTime'])):
             if fittsData['outliers'][i]!=1:
                 
-                Y.append(fittsData['movementTime'][i])
+                Y.append(fittsData['movementTime'][i]) #array of MT
     #             dist=fittsData['distance'][i]
     #             width=fittsData['width'][i]
                 dist=meanDe
@@ -108,7 +108,7 @@ if a:
 #         print"IDE"
 #         print IDe
 #         print"IDE"
-                
+
     Y=np.array(Y)
     X=np.array(X)
     Xt=np.transpose(X)
