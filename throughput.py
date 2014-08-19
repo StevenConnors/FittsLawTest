@@ -156,7 +156,8 @@ if filesPath:
           allIDe.append(IDe[0])
           
           inds=dS.strFind(file,'/')
-          filename=file[inds[-2]:-4].strip()
+          indR=dS.strFind(file,'userData')
+          filename=file[indR[0]+9:-4].strip()
           localPath=file[:inds[-1]].strip()
           realWidth=fittsData['width'][0]
           realDistance=fittsData['distance'][0]
