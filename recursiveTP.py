@@ -116,10 +116,18 @@ if filesPath:
 				else:
 					outlier[i]=1
 					
+			if np.sum(outlier)!=0:
+				errorRate.append(1.0*np.sum(outlier)/len(outlier))
+			else:
+				errorRate.append(0.0)
+				
 			fittsData['outliers']=outlier
-			errorRate.append(1.0*np.sum(outlier)/len(outlier))
+			
+# 			
 			IDe=[]
 			index=[]
+
+                        
 			#Fitts law coefficients
 			for i in range(len(fittsData['movementTime'])):
 				if fittsData['outliers'][i]!=1:
