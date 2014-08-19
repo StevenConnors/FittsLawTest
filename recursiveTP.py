@@ -26,6 +26,9 @@ if filesPath:
 	IPList=[]
 	LinList=[]
 	ErrorList=[]
+	MTList=[]
+	IDeList=[]
+      
 
 
 	for directory in xrange(len(allFiles)/3):
@@ -36,7 +39,8 @@ if filesPath:
 		allIDe=[]
 		TP=0
 		errorRate=[]
-
+		aveMt=0
+		aveIde=0
 		for someFile in xrange(3):
 			file = allFiles[directory*3 + someFile]
 
@@ -147,8 +151,13 @@ if filesPath:
 
 		for j in xrange(3):
 			TP+=1.0*allIDe[j]/averageMT[j]
+			aveMt+=averageMT[j]
+			aveIde+=allIDe[j]
 		TP=1.0*TP/3 #div 3 cause the number of files
-
+		
+		aveMt=aveMt/3
+		aveIde=aveIde/3
+		
 		head, tail = os.path.split(file)
 		head2, target = os.path.split(head)
 		print target
@@ -171,13 +180,16 @@ if filesPath:
 		ErrorList.append(np.mean(errorRate))
 		LinList.append(c)
 		IPList.append(IP)
+		MTList.append(aveMt)
+		IDeList.append(aveIde)
 
 	path="./TPs/"
-	savedTitle=path+"allTPs.dat"
+	savedTitle=path+"allTPs2.dat"
 	f=open(savedTitle, 'w')
-	f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate\n")
+	f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate, meanMovetime, meanIDe\n")
 	for x in xrange(len(TPList)):
-		stuff = FileList[x]+","+'%.4f'%TPList[x]+","+'%.4f'%IPList[x]+","+'%.4f'%LinList[x][0]+","+'%.4f'%LinList[x][1]+","+'%.4f'%ErrorList[x]+"\n"
+		stuff = FileList[x]+","+'%.4f'%TPList[x]+","+'%.4f'%IPList[x]+","+'%.4f'%LinList[x][0]+","+'%.4f'%LinList[x][1]+","+'%.4f'%ErrorList[x]\
+		+","+'%.4f'%MTList[x]+","+'%.4f'%IDeList[x]+","+"\n"
 		f.write(stuff)
 	f.close()
 
