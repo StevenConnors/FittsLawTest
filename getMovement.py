@@ -22,12 +22,13 @@ def getTrace(files):
                 traceMat = np.genfromtxt(fileObj.name, dtype = float, delimiter = ',',\
                     skiprows = 2, names = True, comments = '/')
         elif fileExt == '.dat':
+            fileName = os.path.basename(fileObj.name).split('.')[0]
             clickMat = np.genfromtxt(fileObj.name, dtype = float, delimiter = ',',\
                 skiprows = 2, names = True, comments = '/')
             print str(clickMat.dtype)
 
     # print traceMat['Target']
-    return traceMat, clickMat
+    return fileName, traceMat, clickMat
 
 def getVecLen(vec):
     " Get the length of the vector"
@@ -128,7 +129,7 @@ def run():
     openFiles = tkFileDialog.askopenfiles('r')
     if openFiles:
         # The matrix of movement data and click(target) data
-        traceMat, clickMat = getTrace(openFiles)
+        fileName, traceMat, clickMat = getTrace(openFiles)
         
         targetNum, traceX, traceY, times = traceMat['Target'], traceMat['x'], traceMat['y'], traceMat['times']
         targetNum = [int(x) for x in targetNum]
@@ -147,10 +148,12 @@ def run():
 
         # Show the raw movement in 2-D graph
         figure(fi)
-        fi += 1
         plot(traceX[startCircle:endCircle], traceY[startCircle:endCircle], 'b')
         plot(traceX[startCircle:endCircle], traceY[startCircle:endCircle], 'g.')
-        title('Raw Data')
+        for i in range(startCircle, endCircle-1):
+            quiver(traceX[i], traceY[i], traceX[i+1] - traceX[i], traceY[i+1] - traceY[i], scale_units = 'xy', angles = 'xy', \
+                    scale = 1, width = 0.003, color = 'r')
+        title(fileName + ' - Raw Data')
 
         # Calculate and show the deviation from straight path
         # Note: calculate from the second circle. Because the path of the mouse 
@@ -167,7 +170,7 @@ def run():
                 currTarget = targetNum[i]
                 currStart = currTarget - 1
                 if outlier[currStart] == 1:
-                    # Invalid: move to a valid one
+                    # Invalid: move to a valid one: bi-search for target+1 from [i, end)
                     i = bisect_left(targetNum, currTarget + 1, i)
                     print 'skip data: No.{} to No.{}'.format(str(currStart), str(currTarget))
                     continue
@@ -175,13 +178,17 @@ def run():
                 x0, y0 = traceX[i], traceY[i]
                 straightVec = np.array([ targetX[currTarget] - x0, targetY[currTarget] - y0 ])
                 straightLen  = getVecLen(straightVec)
+                ratio = distance / straightLen
                 print 'straightLen: ' + str(straightLen)
                 devX, devY = [], []
 
-                #print on the raw graph
-                straightX = np.linspace(x0, targetX[currTarget], 50)
-                straightY = np.linspace(y0, targetY[currTarget], 50)
-                plot(straightX, straightY, 'r')
+                # Plot the raw graph
+                figure(fi)
+                quiver(x0, y0, targetX[currTarget] - x0, targetY[currTarget] - y0, scale_units = 'xy', angles = 'xy', \
+                    scale = 1, width = 0.003, color = 'c')
+                # straightX = np.linspace(x0, targetX[currTarget], 50)
+                # straightY = np.linspace(y0, targetY[currTarget], 50)
+                # plot(straightX, straightY, 'r')
 
             # Normal point
             currVec = np.array([ traceX[i] - x0, traceY[i] - y0 ])
@@ -197,20 +204,30 @@ def run():
 
             # print straightVec, currVec, projVec, perpVec, getVecLen(currVec), projLen, perpLen
 
-            devX.append(projLen)
+            devX.append(projLen * ratio)
             devY.append(perpLen)
 
             if i+1 == endCircle or targetNum[i+1] != targetNum[i]:
                 # End of this set
+                figure(fi)
+                plot(traceX[i], traceY[i], 'r*', markersize = 15)
+
+                figure(fi+1)
+                plot(devX[-1], devY[-1], 'r*', markersize = 15)
+
                 deviationData.append([devX, devY])
             i += 1
-            
+        
         figure(fi)
-        fi += 1
+        axis([100, 700, 100, 700])
+
+
+        figure(fi+1)
+        plot([distance, distance], [-100, 100], 'k')
         for devPoints in deviationData:
             plot(devPoints[0], devPoints[1], 'b')
             plot(devPoints[0], devPoints[1], 'g.', markersize = 3)
-        title('Deviation from Straight Path')
+        title(fileName + ' - Deviation from Straight Path')
         axis([-80, distance + 80, -80, 80])
 
 
