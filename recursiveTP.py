@@ -4,6 +4,7 @@ import matplotlib.pylab as plt
 import Tkinter, Tkconstants, tkFileDialog
 import dataReader as dr
 import os
+import dataSearchUtils as dS
 
 allFiles= []
 
@@ -28,7 +29,8 @@ if filesPath:
 	ErrorList=[]
 	MTList=[]
 	IDeList=[]
-      
+	errorRateList=[]
+	outlierRateList=[]
 
 
 	for directory in xrange(len(allFiles)/3):
@@ -41,6 +43,7 @@ if filesPath:
 		errorRate=[]
 		aveMt=0
 		aveIde=0
+		outlierRate=[]
 		for someFile in xrange(3):
 			file = allFiles[directory*3 + someFile]
 
@@ -115,13 +118,22 @@ if filesPath:
 						outlier[i]=0
 				else:
 					outlier[i]=1
-					
-			if np.sum(outlier)!=0:
-				errorRate.append(1.0*np.sum(outlier)/len(outlier))
-			else:
-				errorRate.append(0.0)
 				
 			fittsData['outliers']=outlier
+			
+			if np.sum(fittsData['wrongClick'])!=0:
+				errorRate.append(1.0*np.sum(fittsData['wrongClick'])/len(fittsData['wrongClick']))
+			else:
+				errorRate.append(0.0)
+          
+          
+			if np.sum(outlier)!=0:
+				if fittsData['wrongClick'][0]==1:
+					outlierRate.append(1.0*(np.sum(outlier))/len(outlier)-errorRate[-1])
+				else:
+					outlierRate.append(1.0*(np.sum(outlier)-1)/len(outlier)-errorRate[-1])
+			else:
+				outlierRate.append(0.0)
 			
 # 			
 			IDe=[]
@@ -168,8 +180,12 @@ if filesPath:
 		
 		head, tail = os.path.split(file)
 		head2, target = os.path.split(head)
+		ind=dS.strFind(head2,'userData')
+		print head2[ind[0]+9:]
+		
+		target=head2[ind[0]+9:]+"/" +target
 		print target
-
+		
 		print('Throughput %.4f'%(TP))
 		print('Error Rate %.4f'%(np.mean(errorRate)))
 
@@ -190,15 +206,21 @@ if filesPath:
 		IPList.append(IP)
 		MTList.append(aveMt)
 		IDeList.append(aveIde)
+		errorRateList.append(np.mean(errorRate))
+		outlierRateList.append(np.mean(outlierRate))
 
 	path="./TPs/"
 	savedTitle=path+"allTPs2.dat"
 	f=open(savedTitle, 'w')
-	f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate, meanMovetime, meanIDe\n")
+	f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate, outlierRate, meanMovetime, meanIDe\n")
 	for x in xrange(len(TPList)):
-		stuff = FileList[x]+","+'%.4f'%TPList[x]+","+'%.4f'%IPList[x]+","+'%.4f'%LinList[x][0]+","+'%.4f'%LinList[x][1]+","+'%.4f'%ErrorList[x]\
-		+","+'%.4f'%MTList[x]+","+'%.4f'%IDeList[x]+","+"\n"
-		f.write(stuff)
+# 		stuff = FileList[x]+","+'%.4f'%TPList[x]+","+'%.4f'%IPList[x]+","+'%.4f'%LinList[x][0]+","+'%.4f'%LinList[x][1]+","+'%.4f'%ErrorList[x]\
+# 		+","+'%.4f'%MTList[x]+","+'%.4f'%IDeList[x]+","+"\n"
+# 		f.write(stuff)
+		output='%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f \n'%(FileList[x],TPList[x],IPList[x],LinList[x][0],LinList[x][1],\
+														errorRateList[x],outlierRateList[x],MTList[x],IDeList[x])
+		f.write(output)
+		
 	f.close()
 
 
