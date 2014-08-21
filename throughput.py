@@ -26,10 +26,10 @@ if filesPath:
               if file.endswith(".dat"):
                   allFiles.append(os.path.join(root, file))
                   numFiles+=1
-      print allFiles    
+#       print allFiles    
       
-      X=[]
-      Y=[]
+#       X=[]
+#       Y=[]
       averageMT=[]
       allIDe=[]
       TP=0
@@ -129,6 +129,8 @@ if filesPath:
           
           IDe=[]
           index=[]
+          X=[]
+          Y=[]
           #Fitts law coefficients
           for i in range(len(fittsData['movementTime'])):
               if fittsData['outliers'][i]!=1:
@@ -161,8 +163,20 @@ if filesPath:
           localPath=file[:inds[-1]].strip()
           realWidth=fittsData['width'][0]
           realDistance=fittsData['distance'][0]
-          output.append("%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n"%(filename,meanMvt,stdMvt,meanDe,stdDistance,errorRate[-1],\
-                                                            outlierRate[-1],IDe[0],width,dist,np.log2(realDistance/realWidth+1),realWidth,realDistance))
+          TP=IDe[0]/meanMvt
+          ID=np.log2((realDistance/realWidth)+1)
+          
+          Y=np.array(Y)
+          X=np.array(X)
+          Xt=np.transpose(X)
+          c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
+          IP=1/c[1]
+          reg1=c[0]
+          reg2=c[1]
+          
+          output.append("%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n"%(filename,meanMvt,stdMvt,meanDe,stdDistance,errorRate[-1],\
+                                                            outlierRate[-1],IDe[0],width,dist,ID,realWidth,realDistance,\
+                                                            TP,IP,reg1,reg2))
           
       
       inds=dS.strFind(localPath,'/')
@@ -171,7 +185,8 @@ if filesPath:
 #       outputFile='%s%s%s'%(storingPath,folderName,'_summary.txt')
       with open(outputFile,'w') as ofile:
           ofile.write('filename, meanMT, stdMT, meanDistance, stdDistance, errorRate,'+\
-                          'outlierRate, IDe, meanWidth, meanDist,ID,width,distance\n')
+                          'outlierRate, IDe, meanWidth, meanDist, ID, width, distance,'+\
+                          'TP, IP, reg1, reg2 \n')
           for i in output:
               ofile.write(i)
               
@@ -180,18 +195,18 @@ if filesPath:
           TP+=1.0*allIDe[j]/averageMT[j]
       TP=1.0*TP/len(allFiles)
       
-      print('Throughput %.4f'%(TP))
-      print('Error Rate %.4f'%(np.mean(errorRate)))
+#       print('Throughput %.4f'%(TP))
+#       print('Error Rate %.4f'%(np.mean(errorRate)))
       
       Y=np.array(Y)
       X=np.array(X)
       Xt=np.transpose(X)
       
       c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
-      print "Linear Regression"
-      print(c)
+#       print "Linear Regression"
+#       print(c)
       IP=1/c[1]
-      print('IP %.4f'%(IP))
+#       print('IP %.4f'%(IP))
 
 
         
@@ -206,3 +221,4 @@ if filesPath:
     #print('IP %.4f'%(IP))
             
     
+print('Done')
