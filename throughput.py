@@ -9,8 +9,8 @@ import dataSearchUtils as dS
 allFiles= []
 output=[]
 filename=''
-storingPath='/home/zhen/Src/fingers/FittsLawTest/summaries/'
-# storingPath='/home/julian/Documents/Aptana Studio 3 Workspace/FittsLawTest/summaries/'
+# storingPath='/home/zhen/Src/fingers/FittsLawTest/summaries/'
+storingPath='/home/julian/Documents/Aptana Studio 3 Workspace/FittsLawTest/summaries/'
 
 tkObj=Tkinter.Tk()
 tkObj.file_opt = options = {}
@@ -170,22 +170,22 @@ if filesPath:
           Y=np.array(Y)
           X=np.array(X)
           Xt=np.transpose(X)
-          print(np.version.version)
-          print(Y)
+#           print(np.version.version)
+#           print(Y)
           c=np.dot(np.dot(np.linalg.inv(np.dot(Xt,X)),Xt),Y)
-          print(c[1])
-          print(filename)
-          try:
-            IP=1/c[1]
-          except:
-            print('here')
-            print(c[1])
+#           print(c[1])
+#           print(filename)
+#           try:
+          IP=1/c[1]
+#           except:
+#             print('here')
+#             print(c[1])
           reg1=c[0]
           reg2=c[1]
           
-          output.append("%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n"%(filename,meanMvt,stdMvt,meanDe,stdDistance,errorRate[-1],\
+          output.append("%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\n"%(filename,meanMvt,stdMvt,meanDe,stdDistance,errorRate[-1],\
                                                             outlierRate[-1],IDe[0],width,dist,ID,realWidth,realDistance,\
-                                                            TP,IP,reg1,reg2))
+                                                            TP))
           
       
       inds=dS.strFind(localPath,'/')
@@ -195,7 +195,7 @@ if filesPath:
       with open(outputFile,'w') as ofile:
           ofile.write('filename, meanMT, stdMT, meanDistance, stdDistance, errorRate,'+\
                           'outlierRate, IDe, meanWidth, meanDist, ID, width, distance,'+\
-                          'TP, IP, reg1, reg2 \n')
+                          'TP \n')
           for i in output:
               ofile.write(i)
               
