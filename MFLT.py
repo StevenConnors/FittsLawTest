@@ -13,17 +13,19 @@ import os.path
 import random
 
 def mousePressed(canvas, event):
+<<<<<<< HEAD
 	if canvas.data.start:
 		if (canvas.data.pressButtons==False): #if first time clicking at a circle,
 
+			#on the first click, record the location
 			if canvas.data.errorMade==0:
 				canvas.data.listX.append(event.x)
 				canvas.data.listY.append(event.y)
-
-			if ( ((event.x-canvas.data.centerX)**2)+((event.y-canvas.data.centerY)**2)<((canvas.data.circleWidth/2)**2) ): #correct click
 				canvas.data.listcX.append(canvas.data.centerX)
 				canvas.data.listcY.append(canvas.data.centerY)
-				
+			#If correct click, 
+			if ( ((event.x-canvas.data.centerX)**2)+((event.y-canvas.data.centerY)**2)<((canvas.data.circleWidth/2)**2) ):
+
 				if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
 					canvas.data.errorMargin.append(0)
 				canvas.data.errorClicks=[]
@@ -51,8 +53,48 @@ def mousePressed(canvas, event):
 	else: #so this is for the start screen, when choosing devices
 		mouseButtonPressed(canvas,event)
 	redrawAll(canvas)
+=======
+    data=canvas.data
+    if data.start:
+#        print data.clicks
 
-#this function is only for selecting the modes on the top right
+        if (canvas.data.errorMade==0 and canvas.data.pressButtons==False): #if first time clicking at a circle,
+            canvas.data.listX.append(event.x)
+            canvas.data.listY.append(event.y)
+
+        if ( ((event.x-data.centerX)**2)+((event.y-data.centerY)**2)<\
+                ((data.circleWidth/2)**2) ):
+            canvas.data.listcX.append(canvas.data.centerX)
+            canvas.data.listcY.append(canvas.data.centerY)
+            
+            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+                canvas.data.errorMargin.append(0)
+            canvas.data.errorClicks=[]
+            canvas.data.errorMade=0
+
+            canvas.data.clicks+=1
+            recordTime(canvas)
+            resetPath(canvas)
+#Eedit: after a successful click, raise a flg forcing a button press
+            canvas.data.pressButtons=True
+#this time.time is to ignore the time to press keys:
+            canvas.data.buttonTime=time.time()
+
+        else: #clicked outside of the circle
+            errorX=event.x-canvas.data.centerX
+            errorY=event.y-canvas.data.centerY
+            value=(errorX**2)+(errorY**2)
+            errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
+            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+                canvas.data.error.append(canvas.data.clicks)
+                canvas.data.errorMargin.append(errorDel)
+                canvas.data.errorClicks.append([event.x,event.y])
+                canvas.data.errorMade=1
+    else: #so this is for the start screen, when choosing devices
+        mouseButtonPressed(canvas,event)
+    redrawAll(canvas)
+>>>>>>> FETCH_HEAD
+
 def mouseButtonPressed(canvas,event):
 	x1=550
 	y1=50
@@ -84,7 +126,7 @@ def recordTime(canvas):
 	#    elapsed=time.time()-canvas.data.time
 	#else:
 	#    elapsed=(time.time()-canvas.data.time)-(time.time()-canvas.data.buttonTime)
-	elapsed=(time.time()-canvas.data.time)-(time.time()-canvas.data.buttonTime)
+	elapsed=(time.time()-canvas.data.time)
 	canvas.data.times.append(elapsed)   
 
 def resetPath(canvas):
@@ -315,7 +357,7 @@ def writeFiles(canvas):
 	f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word\n")
 		#write Body Header 
 	
-	#canvas.data.times= modifiedTimes(canvas)
+	canvas.data.times= modifiedTimes(canvas)
 
 	for x in xrange(canvas.data.numberToGo):
 		clicked=checkClicked(x, canvas)
@@ -346,6 +388,9 @@ def modifiedTimes(canvas):
 			for j in xrange(i-1):
 				time = time-canvas.data.homingTimes[j] - canvas.data.typingTimes[j-1] - canvas.data.buttonTimes[j-1]
 		newTimes.append(time)
+
+	print newTimes
+	print canvas.data.times
 	return newTimes
 ################################################################################################################################################################
 
@@ -525,6 +570,7 @@ def setSecondaryValues(canvas): #for setting values that are reset after every r
 	canvas.data.typingTimes=[]
 
 	canvas.data.listOfWords=[]
+	canvas.data.firstTime=False
 
 def run():
 	# create the root and the canvas
