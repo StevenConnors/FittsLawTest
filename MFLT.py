@@ -13,7 +13,6 @@ import os.path
 import random
 
 def mousePressed(canvas, event):
-<<<<<<< HEAD
 	if canvas.data.start:
 		if (canvas.data.pressButtons==False): #if first time clicking at a circle,
 
@@ -53,7 +52,7 @@ def mousePressed(canvas, event):
 	else: #so this is for the start screen, when choosing devices
 		mouseButtonPressed(canvas,event)
 	redrawAll(canvas)
-=======
+
     data=canvas.data
     if data.start:
 #        print data.clicks
@@ -93,7 +92,7 @@ def mousePressed(canvas, event):
     else: #so this is for the start screen, when choosing devices
         mouseButtonPressed(canvas,event)
     redrawAll(canvas)
->>>>>>> FETCH_HEAD
+
 
 def mouseButtonPressed(canvas,event):
 	x1=550
@@ -591,59 +590,3 @@ def run():
 	timerFired(canvas) 
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
 run()
-
-
-""""
-
-canvas.data.wordList=[
-		'candle',
-		'glencoe',
-		'saith',
-		'chinagraph',
-		'dacryon',
-		'lancewood',
-		'defencelessly',
-		'mareograph',
-		'fence',
-		'weslaco',
-		'tumbrel',
-		'salespeople',
-		'wran',
-		'geophagism',
-		'undercast',
-		'unselfconsciousness',
-		'indisputableness',
-		'keifer',
-		'donald',
-		'sicilies',
-		'counteraction',
-		'warmthless',
-		'leaky',
-		'groveling',
-		'shinnston',
-		'korah',
-		'understage',
-		'phycocolloid',
-		'autopotamic',
-		'israel',
-		'floweriness',
-		'cephalothorax',
-		'disincline',
-		'involutional',
-		'approvability',
-		'illegitimatizing',
-		'unfired',
-		'quadrivalency',
-		'nonsawing',
-		'blackwood',
-		'fountainless',
-		'marlene',
-		'lapstreak',
-		'republicanising',
-		'iwis',
-		'mihail',
-		'overfemininity',
-		'cannily',
-		'nonutterance',
-		'doorstep']
-		"""
