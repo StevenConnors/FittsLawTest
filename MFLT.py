@@ -13,7 +13,6 @@ import os.path
 import random
 
 def mousePressed(canvas, event):
-<<<<<<< HEAD
     data=canvas.data
     if data.start:
 #        print data.clicks
