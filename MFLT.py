@@ -12,6 +12,7 @@ import tkFileDialog
 import os.path
 import random
 
+
 def mousePressed(canvas, event):
 	if canvas.data.start:
 		if (canvas.data.pressButtons==False): #if first time clicking at a circle,
@@ -24,75 +25,38 @@ def mousePressed(canvas, event):
 				canvas.data.listcY.append(canvas.data.centerY)
 			#If correct click, 
 			if ( ((event.x-canvas.data.centerX)**2)+((event.y-canvas.data.centerY)**2)<((canvas.data.circleWidth/2)**2) ):
-
-				if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
-					canvas.data.errorMargin.append(0)
-				canvas.data.errorClicks=[]
-				canvas.data.errorMade=0
-				canvas.data.clicks+=1
-	#Eedit: after a successful click, raise a flg forcing to type the keyboard
-				canvas.data.pressButtons=True
-				canvas.data.firstTime=True
-	#this time.time is to ignore the time to press keys:
-				canvas.data.buttonTime=time.time()
-
-				recordTime(canvas)
-				resetPath(canvas)
-
+				successfulClick(canvas,event)
 			else: #clicked outside of the circle
-				errorX=event.x-canvas.data.centerX
-				errorY=event.y-canvas.data.centerY
-				value=(errorX**2)+(errorY**2)
-				errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
-				if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
-					canvas.data.error.append(canvas.data.clicks)
-					canvas.data.errorMargin.append(errorDel)
-					canvas.data.errorClicks.append([event.x,event.y])
-					canvas.data.errorMade=1
+				missedClick(canvas,event)
 	else: #so this is for the start screen, when choosing devices
 		mouseButtonPressed(canvas,event)
 	redrawAll(canvas)
 
-    data=canvas.data
-    if data.start:
-#        print data.clicks
-
-        if (canvas.data.errorMade==0 and canvas.data.pressButtons==False): #if first time clicking at a circle,
-            canvas.data.listX.append(event.x)
-            canvas.data.listY.append(event.y)
-
-        if ( ((event.x-data.centerX)**2)+((event.y-data.centerY)**2)<\
-                ((data.circleWidth/2)**2) ):
-            canvas.data.listcX.append(canvas.data.centerX)
-            canvas.data.listcY.append(canvas.data.centerY)
-            
-            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
-                canvas.data.errorMargin.append(0)
-            canvas.data.errorClicks=[]
-            canvas.data.errorMade=0
-
-            canvas.data.clicks+=1
-            recordTime(canvas)
-            resetPath(canvas)
-#Eedit: after a successful click, raise a flg forcing a button press
-            canvas.data.pressButtons=True
+def successfulClick(canvas,event):
+	if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+		canvas.data.errorMargin.append(0)
+	canvas.data.errorClicks=[]
+	canvas.data.errorMade=0
+	canvas.data.clicks+=1
+#Eedit: after a successful click, raise a flg forcing to type the keyboard
+	canvas.data.pressButtons=True
+	canvas.data.firstTime=True
 #this time.time is to ignore the time to press keys:
-            canvas.data.buttonTime=time.time()
+	canvas.data.buttonTime=time.time()
 
-        else: #clicked outside of the circle
-            errorX=event.x-canvas.data.centerX
-            errorY=event.y-canvas.data.centerY
-            value=(errorX**2)+(errorY**2)
-            errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
-            if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
-                canvas.data.error.append(canvas.data.clicks)
-                canvas.data.errorMargin.append(errorDel)
-                canvas.data.errorClicks.append([event.x,event.y])
-                canvas.data.errorMade=1
-    else: #so this is for the start screen, when choosing devices
-        mouseButtonPressed(canvas,event)
-    redrawAll(canvas)
+	recordTime(canvas)
+	resetPath(canvas)
 
+def missedClick(canvas,event):
+	errorX=event.x-canvas.data.centerX
+	errorY=event.y-canvas.data.centerY
+	value=(errorX**2)+(errorY**2)
+	errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
+	if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
+		canvas.data.error.append(canvas.data.clicks)
+		canvas.data.errorMargin.append(errorDel)
+		canvas.data.errorClicks.append([event.x,event.y])
+		canvas.data.errorMade=1	
 
 def mouseButtonPressed(canvas,event):
 	x1=550
