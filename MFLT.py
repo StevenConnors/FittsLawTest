@@ -18,7 +18,7 @@ def mousePressed(canvas, event):
     if data.start:
 #        print data.clicks
 
-        if (canvas.data.errorMade==0 and canvas.data.pressButtons=False): #if first time clicking at a circle,
+        if (canvas.data.errorMade==0 and canvas.data.pressButtons==False): #if first time clicking at a circle,
             canvas.data.listX.append(event.x)
             canvas.data.listY.append(event.y)
 
