@@ -85,10 +85,6 @@ def mouseButtonPressed(canvas,event):
 		canvas.data.secondTime="green"
 
 def recordTime(canvas):
-	#if canvas.data.buttonTime==0:
-	#    elapsed=time.time()-canvas.data.time
-	#else:
-	#    elapsed=(time.time()-canvas.data.time)-(time.time()-canvas.data.buttonTime)
 	elapsed=(time.time()-canvas.data.time)
 	canvas.data.times.append(elapsed)   
 
@@ -97,8 +93,7 @@ def resetPath(canvas):
 	canvas.data.allPathTimes.append(canvas.data.pathTimes)
 	canvas.data.path=[]
 	canvas.data.pathTimes=[]
-#    print canvas.data.trajectories
-#Determine which word to type
+	#Determine which word to type
 	canvas.data.random = random.randint(0,49)
 
 def motion(canvas, event): #store in a list and then delete lk hlaf
@@ -126,41 +121,34 @@ def keyPressed(canvas, event):
 		startClock(canvas)
 	elif (canvas.data.start and canvas.data.pressButtons):
 #This is for typing
-		#Gets the homing time for typing
-		if canvas.data.firstTime:
-			canvas.data.firstTime=False
-			canvas.data.buttonTimes.append(time.time()-canvas.data.buttonTime)
-			canvas.data.buttonTime=0
-			canvas.data.typingTime=time.time()
-		if event.keysym in string.ascii_letters:
-			canvas.data.typed = "".join((canvas.data.typed, event.keysym))
-		elif event.keysym=="BackSpace":
-			canvas.data.typed=canvas.data.typed[:-1]
-
-		#check if correct word
-		if canvas.data.typed == canvas.data.currentWord:
-			canvas.data.pressButtons=False
-			canvas.data.typingTimes.append(time.time()-canvas.data.typingTime)
-			canvas.data.typingTime=0
-			canvas.data.typed = ""
-			canvas.data.homingTime=time.time()
-			canvas.data.listOfWords.append(canvas.data.currentWord)
-
+		keyTyping(canvas,event)		
 #Below is for set up
 	elif (canvas.data.start==False and canvas.data.nameSet==False):
-		if event.keysym in string.ascii_letters:
-			canvas.data.name=canvas.data.name+event.keysym
-		elif event.keysym=="space":
-			canvas.data.name=canvas.data.name+" "
-		elif event.keysym=="BackSpace":
-			canvas.data.name=canvas.data.name[:-1]
-#            print canvas.data.name
-		elif event.keysym=="Return":
-			canvas.data.nameSet=True
+		setUserName(canvas,event)
+#below is if a key was accidentally pressed
 	elif (canvas.data.start==True):
 		canvas.data.keyPressed.append(canvas.data.clicks)
-#        print (canvas.data.clicks, event.keysym) #see if a key was pressed
 	redrawAll(canvas)
+
+def keyTyping(canvas,event):
+	if canvas.data.firstTime:
+		#gets the typing and homing time
+		canvas.data.firstTime=False
+		canvas.data.buttonTimes.append(time.time()-canvas.data.buttonTime)
+		canvas.data.buttonTime=0
+		canvas.data.typingTime=time.time()
+	if event.keysym in string.ascii_letters:
+		canvas.data.typed = "".join((canvas.data.typed, event.keysym))
+	elif event.keysym=="BackSpace":
+		canvas.data.typed=canvas.data.typed[:-1]
+	#check if correct word
+	if canvas.data.typed == canvas.data.currentWord:
+		canvas.data.pressButtons=False
+		canvas.data.typingTimes.append(time.time()-canvas.data.typingTime)
+		canvas.data.typingTime=0
+		canvas.data.typed = ""
+		canvas.data.homingTime=time.time()
+		canvas.data.listOfWords.append(canvas.data.currentWord)	
 
 def setDeviceName(canvas):
 	if canvas.data.circleMouse:
@@ -171,6 +159,17 @@ def setDeviceName(canvas):
 		canvas.data.device="fingers"
 	else:
 		canvas.data.device="2ndTime"
+
+def setUserName(canvas,event):
+	if event.keysym in string.ascii_letters:
+		canvas.data.name=canvas.data.name+event.keysym
+	elif event.keysym=="space":
+		canvas.data.name=canvas.data.name+" "
+	elif event.keysym=="BackSpace":
+		canvas.data.name=canvas.data.name[:-1]
+#            print canvas.data.name
+	elif event.keysym=="Return":
+		canvas.data.nameSet=True	
 
 
 ##########################################################################################################
@@ -319,9 +318,7 @@ def writeFiles(canvas):
 		#Header: subject name, configuration file used, date, 
 	f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word\n")
 		#write Body Header 
-	
-	canvas.data.times= modifiedTimes(canvas)
-
+	#canvas.data.times= modifiedTimes(canvas)
 	for x in xrange(canvas.data.numberToGo):
 		clicked=checkClicked(x, canvas)
 		key=checkKeyPressed(x,canvas)
