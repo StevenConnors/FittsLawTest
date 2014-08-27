@@ -186,18 +186,6 @@ def timerFired(canvas):
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 	canvas.delete(ALL)
-
-	textTime= time.time()- canvas.data.time
-	textHomingOne= time.time()-canvas.data.homingTime
-	textButtonTime= time.time()-canvas.data.buttonTime
-	textTypingTime= time.time()-canvas.data.typingTime
-
-
-	canvas.create_text(40, 20, text=("Time: %.4d "%textTime), font="Times 12")
-	canvas.create_text(40, 40, text=("Time: %.4d "%textHomingOne), font="Times 12")
-	canvas.create_text(40, 60, text=("Time: %.4d "%textButtonTime), font="Times 12")
-	canvas.create_text(40, 80, text=("Time: %.4d "%textTypingTime), font="Times 12")
-
 	if canvas.data.startScreen: #draw start screen
 		drawStartScreen(canvas)
 	else: #start circles
@@ -348,7 +336,6 @@ def modifiedTimes(canvas):
 			for j in xrange(i-1):
 				time = time-canvas.data.homingTimes[j] - canvas.data.typingTimes[j-1] - canvas.data.buttonTimes[j-1]
 		newTimes.append(time)
-
 	print newTimes
 	print canvas.data.times
 	return newTimes
@@ -410,16 +397,12 @@ def readFile(canvas):
 			canvas.data.diameter=int(f.readline())
 
 def init(canvas):
-
 	canvas.data.diameter=30 #Filler in case of error
 	canvas.data.circleWidth=10 #filler 
-
 	canvas.data.round=0
 	canvas.data.numberOfRounds=3
-#################################################################################
 #condition
 	openFile(canvas)
-#################################################################################
 #set values
 	setInitialValues(canvas) #doesn't change throughotu
 	setSecondaryValues(canvas) #changes per round
