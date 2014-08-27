@@ -1,8 +1,3 @@
-
-#canvas.data.times is not working properly
-
-#canvas.data.homingTime and homingTimes is for the time it takes for the user to move mouse, hom1
-
 from Tkinter import *
 import math
 import time
@@ -11,7 +6,6 @@ import datetime
 import tkFileDialog
 import os.path
 import random
-
 
 def mousePressed(canvas, event):
 	if canvas.data.start:
@@ -110,7 +104,6 @@ def startClock(canvas):
 	canvas.data.time=time.time()
 	canvas.data.homingTime=time.time()
 
-
 def keyPressed(canvas, event):
 	#While actual testing.
 	if (canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
@@ -171,7 +164,6 @@ def setUserName(canvas,event):
 	elif event.keysym=="Return":
 		canvas.data.nameSet=True	
 
-
 ##########################################################################################################
 ######################################  Draw Things  #####################################################
 ##########################################################################################################
@@ -206,8 +198,6 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 				canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 			else: #final 
 				canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Testing Complete", font="Times 30")
-
-		#otherwize doesn't do anything (So in between the experiments)
 
 def drawStartScreen(canvas):
 	if canvas.data.nameSet==False:
@@ -253,7 +243,6 @@ def drawTyping(canvas):
 	canvas.create_text(canvas.data.width/2, canvas.data.height/2-150, text="Type:"+canvas.data.typed, font="Times 40", fill="black")
 	canvas.data.currentWord = canvas.data.wordList[canvas.data.random]
 	canvas.create_text(canvas.data.width/2, canvas.data.height/2 - 50, text="Type:"+ canvas.data.wordList[canvas.data.random], font="Times 40", fill="black")
-
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
@@ -396,6 +385,11 @@ def readFile(canvas):
 			f.readline()
 			canvas.data.diameter=int(f.readline())
 
+##########################################################################################################
+######################################   Init Things  ####################################################
+##########################################################################################################
+
+
 def init(canvas):
 	canvas.data.diameter=30 #Filler in case of error
 	canvas.data.circleWidth=10 #filler 
@@ -407,7 +401,6 @@ def init(canvas):
 	setInitialValues(canvas) #doesn't change throughotu
 	setSecondaryValues(canvas) #changes per round
 
-
 def setInitialValues(canvas):
 	canvas.data.name=""
 	canvas.data.nameSet=False
@@ -418,8 +411,6 @@ def setInitialValues(canvas):
 	canvas.data.fingers=None
 	canvas.data.secondTime=None
 	canvas.data.path=""
-
-
 	canvas.data.wordList=[
 		'candle',
 		'glencoe',
