@@ -30,6 +30,7 @@ def successfulClick(canvas,event):
 	if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
 		canvas.data.errorMargin.append(0)
 	canvas.data.errorClicks=[]
+	canvas.data.allError=[]
 	canvas.data.errorMade=0
 	canvas.data.clicks+=1
 #Eedit: after a successful click, raise a flg forcing to type the keyboard
@@ -46,6 +47,7 @@ def missedClick(canvas,event):
 	errorY=event.y-canvas.data.centerY
 	value=(errorX**2)+(errorY**2)
 	errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
+	canvas.data.allError.append([event.x,event.y])
 	if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
 		canvas.data.error.append(canvas.data.clicks)
 		canvas.data.errorMargin.append(errorDel)
@@ -187,6 +189,7 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 					drawTyping(canvas)
 				else:
 					drawCircles(canvas)
+					drawError(canvas)
 			else: #round finished 
 				canvas.data.round+=1
 				canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
@@ -239,10 +242,20 @@ def drawCircles(canvas):
 	y2=cY+canvas.data.circleWidth/2
 	canvas.create_oval(x1,y1,x2,y2, fill="green")
 
+def drawError(canvas):
+    for i in xrange(len(canvas.data.allError)):
+        cX=canvas.data.allError[i][0]
+        cY=canvas.data.allError[i][1]
+        x1=cX-2
+        y1=cY-2
+        x2=cX+2
+        y2=cY+2
+        canvas.create_oval(x1,y1,x2,y2, fill="red")
+
 def drawTyping(canvas):
-	canvas.create_text(canvas.data.width/2, canvas.data.height/2-150, text="Type:"+canvas.data.typed, font="Times 40", fill="black")
+	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2-50, text="Type: "+canvas.data.typed, font="Times 40", fill="black", anchor="w")
 	canvas.data.currentWord = canvas.data.wordList[canvas.data.random]
-	canvas.create_text(canvas.data.width/2, canvas.data.height/2 - 50, text="Type:"+ canvas.data.wordList[canvas.data.random], font="Times 40", fill="black")
+	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2 - 150, text="Type: "+ canvas.data.wordList[canvas.data.random], font="Times 40", fill="black", anchor="w")
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
@@ -413,55 +426,55 @@ def setInitialValues(canvas):
 	canvas.data.path=""
 	canvas.data.wordList=[
 		'candle',
-		'glencoe',
-		'saith',
-		'chinagraph',
-		'dacryon',
-		'lancewood',
-		'defencelessly',
-		'mareograph',
-		'fence',
-		'weslaco',
-		'tumbrel',
-		'salespeople',
-		'wran',
-		'geophagism',
-		'undercast',
-		'unselfconsciousness',
-		'indisputableness',
-		'keifer',
-		'donald',
-		'sicilies',
-		'counteraction',
-		'warmthless',
-		'leaky',
-		'groveling',
-		'shinnston',
-		'korah',
-		'understage',
-		'phycocolloid',
-		'autopotamic',
-		'israel',
-		'floweriness',
-		'cephalothorax',
-		'disincline',
-		'involutional',
-		'approvability',
-		'illegitimatizing',
-		'unfired',
-		'quadrivalency',
-		'nonsawing',
-		'blackwood',
-		'fountainless',
-		'marlene',
-		'lapstreak',
-		'republicanising',
-		'iwis',
-		'mihail',
-		'overfemininity',
-		'cannily',
-		'nonutterance',
-		'doorstep']
+		'ceiling',
+		'lamp',
+		'table',
+		'computer',
+		'chair',
+		'door',
+		'friend',
+		'yahoo',
+		'apple',
+		'google',
+		'him',
+		'her',
+		'you',
+		'bring',
+		'kettle',
+		'backpack',
+		'melon',
+		'carnegie',
+		'pittsburgh',
+		'speakers',
+		'microphone',
+		'mouse',
+		'fingers',
+		'keyboard',
+		'tissue',
+		'towel',
+		'paper',
+		'printer',
+		'scanner',
+		'flower',
+		'university',
+		'college',
+		'toothpaste',
+		'garbage',
+		'suitcase',
+		'napkin',
+		'restaurant',
+		'cafe',
+		'gates',
+		'center',
+		'avenue',
+		'street',
+		'government',
+		'research',
+		'sheets',
+		'male',
+		'female',
+		'woods',
+		'tree']
 
 def setSecondaryValues(canvas): #for setting values that are reset after every round
 
@@ -505,6 +518,9 @@ def setSecondaryValues(canvas): #for setting values that are reset after every r
 
 	canvas.data.listOfWords=[]
 	canvas.data.firstTime=False
+
+	canvas.data.allError=[]
+
 
 def run():
 	# create the root and the canvas

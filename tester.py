@@ -43,6 +43,7 @@ def mousePressed(canvas, event):
             errorY=event.y-canvas.data.centerY
             value=(errorX**2)+(errorY**2)
             errorDel= math.sqrt(value)-(canvas.data.circleWidth/2)
+            canvas.data.allError.append([event.x,event.y])
             if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
                 canvas.data.error.append(canvas.data.clicks)
                 canvas.data.errorMargin.append(errorDel)
@@ -225,9 +226,9 @@ def drawCircles(canvas):
     canvas.create_oval(x1,y1,x2,y2, fill="green")
 
 def drawError(canvas):
-    for i in xrange(len(canvas.data.errorClicks)):
-        cX=canvas.data.errorClicks[i][0]
-        cY=canvas.data.errorClicks[i][1]
+    for i in xrange(len(canvas.data.allError)):
+        cX=canvas.data.allError[i][0]
+        cY=canvas.data.allError[i][1]
         x1=cX-2
         y1=cY-2
         x2=cX+2
@@ -456,6 +457,7 @@ def setSecondaryValues(canvas): #for setting values
     canvas.data.homingTime=0
     canvas.data.homingTimes=[]
 
+    canvas.data.allError=[]
 
 
 def run():
