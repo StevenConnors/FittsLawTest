@@ -158,6 +158,8 @@ def setDeviceName(canvas):
 def setUserName(canvas,event):
 	if event.keysym in string.ascii_letters:
 		canvas.data.name=canvas.data.name+event.keysym
+	elif event.keysym in string.digits:
+	    canvas.data.name=canvas.data.name+event.keysym
 	elif event.keysym=="space":
 		canvas.data.name=canvas.data.name+" "
 	elif event.keysym=="BackSpace":
