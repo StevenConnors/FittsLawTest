@@ -33,6 +33,7 @@ def mousePressed(canvas, event):
             if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
                 canvas.data.errorMargin.append(0)
             canvas.data.errorClicks=[]
+            canvas.data.allError=[]
             canvas.data.errorMade=0
             
             canvas.data.clicks+=1
@@ -465,6 +466,7 @@ def run():
     root = Tk()
     cHeight=700
     cWidth=700
+    root.attributes("-fullscreen", True) #substitute `Tk` for whatever your `Tk()` object is called
     canvas = Canvas(root, width=cWidth, height=cHeight)
     canvas.pack()
     # Set up canvas data and call init
