@@ -82,6 +82,7 @@ def mouseButtonPressed(canvas,event):
 
 def recordTime(canvas):
 	elapsed=(time.time()-canvas.data.time)
+#-canvas.data.homingTimes[-1]
 	canvas.data.times.append(elapsed)   
 
 def resetPath(canvas):
@@ -130,6 +131,8 @@ def keyTyping(canvas,event):
 		#gets the typing and homing time
 		canvas.data.firstTime=False
 		canvas.data.buttonTimes.append(time.time()-canvas.data.buttonTime)
+		canvas.data.time+=time.time()-canvas.data.buttonTime
+		#should account for typingtime as well
 		canvas.data.buttonTime=0
 		canvas.data.typingTime=time.time()
 	if event.keysym in string.ascii_letters:
@@ -140,6 +143,7 @@ def keyTyping(canvas,event):
 	if canvas.data.typed == canvas.data.currentWord:
 		canvas.data.pressButtons=False
 		canvas.data.typingTimes.append(time.time()-canvas.data.typingTime)
+		canvas.data.time+=time.time()-canvas.data.typingTime
 		canvas.data.typingTime=0
 		canvas.data.typed = ""
 		canvas.data.homingTime=time.time()
@@ -310,7 +314,7 @@ def writeFiles(canvas):
 		#Header: subject name, configuration file used, date, 
 	f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word\n")
 		#write Body Header 
-	#canvas.data.times= modifiedTimes(canvas)
+	canvas.data.times= modifiedTimes(canvas)
 	for x in xrange(canvas.data.numberToGo):
 		clicked=checkClicked(x, canvas)
 		key=checkKeyPressed(x,canvas)
@@ -331,18 +335,13 @@ def writeFiles(canvas):
 
 ################################################################################################################################################################
 def modifiedTimes(canvas):
-	newTimes=[]
-	for i in xrange(canvas.data.numberToGo):
-		time= canvas.data.times[i]
-		if (i==0):
-			time = time-canvas.data.homingTimes[i]
-		else:
-			for j in xrange(i-1):
-				time = time-canvas.data.homingTimes[j] - canvas.data.typingTimes[j-1] - canvas.data.buttonTimes[j-1]
-		newTimes.append(time)
-	print newTimes
-	print canvas.data.times
-	return newTimes
+    newTimes=[]
+    for i in xrange(canvas.data.numberToGo):
+        time= canvas.data.times[i]
+        for j in xrange(i+1):
+            time -= canvas.data.homingTimes[j]
+        newTimes.append(time)
+    return newTimes
 ################################################################################################################################################################
 
 
@@ -381,8 +380,6 @@ def writeTracking(canvas):
 
 #reads the calibration file
 def openFile(canvas):
-	root = Tk()
-	root.withdraw()
 	file_path = tkFileDialog.askopenfilename()
 	canvas.data.condition=file_path
 	#Set diameter and width to condition
