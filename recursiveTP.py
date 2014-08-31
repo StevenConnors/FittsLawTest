@@ -6,6 +6,27 @@ import dataReader as dr
 import os
 import dataSearchUtils as dS
 
+
+def deviceUsed(path):
+     if dS.strFind(path,'Mouse'):
+         return 'Mouse'
+     elif dS.strFind(path,'FR'):
+         return 'Fingers relative'
+     elif dS.strFind(path,'FA'):
+         return 'Fingers absolute'
+     elif dS.strFind(path,'Trackpad'):
+         return 'Trackpad'
+     else:
+         return 'Undefined'
+     
+def participantIDfdr(path):
+    inds=dS.strFind(path,'-')
+    return path[0:inds[0]]
+     
+     
+    
+
+
 allFiles= []
 
 tkObj=Tkinter.Tk()
@@ -219,15 +240,19 @@ if filesPath:
         outlierRateList.append(np.mean(outlierRate))
 
     path="./TPs/"
-    savedTitle=path+"allTPs2.dat"
+    savedTitle=path+"allTPs.csv"
     f=open(savedTitle, 'w')
-    f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate, outlierRate, meanMovetime, meanIDe\n")
+    f.write("Filename, TP, IP, Lin1, Lin2, ErrorRate, outlierRate, meanMovetime, meanIDe, participantID, device, trial#\n")
     for x in xrange(len(TPList)):
 #       stuff = FileList[x]+","+'%.4f'%TPList[x]+","+'%.4f'%IPList[x]+","+'%.4f'%LinList[x][0]+","+'%.4f'%LinList[x][1]+","+'%.4f'%ErrorList[x]\
 #       +","+'%.4f'%MTList[x]+","+'%.4f'%IDeList[x]+","+"\n"
 #       f.write(stuff)
-        output='%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f \n'%(FileList[x],TPList[x],IPList[x],LinList[x][0],LinList[x][1],\
-                                                        errorRateList[x],outlierRateList[x],MTList[x],IDeList[x])
+        device=deviceUsed(FileList[x])
+        pId=participantIDfdr(FileList[x])  
+        trialN=FileList[x][-1]      
+        output='%s,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%s,%s,%s \n'%(FileList[x],TPList[x],IPList[x],LinList[x][0],LinList[x][1],\
+                                                        errorRateList[x],outlierRateList[x],MTList[x],IDeList[x],\
+                                                        pId,device,trialN)
         f.write(output)
         
     f.close()

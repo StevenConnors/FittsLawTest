@@ -18,4 +18,6 @@ for i in range(30):
                 break
         temp.append(seq)
     conds.append(temp)
-print(conds)
+for i in conds:
+    for i2 in i:
+        print('%s\t%s\t%s'%(i2[0],i2[1],i2[2]))
