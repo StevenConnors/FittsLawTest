@@ -193,9 +193,13 @@ def timerFired(canvas):
 	canvas.after(delay, f) # pause, then call timerFired again
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
-	if canvas.data.client:
-		canvas.data.fStatus=canvas.data.client.run()
-		print canvas.data.fStatus
+	# Show the status of 'fingers'
+	if canvas.data.device=="fingers":
+		if canvas.data.client:
+			canvas.data.fStatus=canvas.data.client.run()
+			print canvas.data.fStatus
+			drawFStatus(canvas)
+
 	canvas.delete(ALL)
 	if canvas.data.startScreen: #draw start screen
 		drawStartScreen(canvas)
@@ -273,6 +277,14 @@ def drawTyping(canvas):
 	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2-50, text="Type: "+canvas.data.typed, font="Times 40", fill="black", anchor="w")
 	canvas.data.currentWord = canvas.data.wordList[canvas.data.random]
 	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2 - 150, text="Type: "+ canvas.data.wordList[canvas.data.random], font="Times 40", fill="black", anchor="w")
+
+def drawFStatus(canvas):
+	if canvas.data.fStatus == '1':
+		status = '   Mouse Mode'
+	else:
+		status = 'Keyboard Mode'
+
+	canvas.create_text(50, 50, text=status, font="Times 40", fill="black", anchor="w")
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
