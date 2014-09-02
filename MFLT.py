@@ -527,7 +527,7 @@ def run():
 	root = Tk()
 	cHeight=700
 	cWidth=700
-	root.attributes("-fullscreen", True) #substitute `Tk` for whatever your `Tk()` object is called
+	#root.attributes("-fullscreen", True) #substitute `Tk` for whatever your `Tk()` object is called
 	canvas = Canvas(root, width=cWidth, height=cHeight)
 	canvas.pack()
 	# Set up canvas data and call init
