@@ -6,6 +6,7 @@ import datetime
 import tkFileDialog
 import os.path
 import random
+import statusClient as sC
 
 def mousePressed(canvas, event):
 	if canvas.data.start:
