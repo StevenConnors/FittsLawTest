@@ -75,6 +75,11 @@ def mouseButtonPressed(canvas,event):
 		canvas.data.trackpad=None 
 		canvas.data.fingers="green"
 		canvas.data.secondTime=None
+		
+		if canvas.data.client==[]:
+			canvas.data.client=sC.Client('localhost',50000)
+		
+# 		c.run()
 	if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
 		canvas.data.circleMouse=None
 		canvas.data.trackpad=None
@@ -128,6 +133,8 @@ def keyPressed(canvas, event):
 	redrawAll(canvas)
 
 def keyTyping(canvas,event):
+	if canvas.data.fStatus=='1' and canvas.data.device=="fingers":
+		return
 	if canvas.data.firstTime:
 		#gets the typing and homing time
 		canvas.data.firstTime=False
@@ -186,6 +193,9 @@ def timerFired(canvas):
 	canvas.after(delay, f) # pause, then call timerFired again
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
+	if canvas.data.client:
+		canvas.data.fStatus=canvas.data.client.run()
+		print canvas.data.fStatus
 	canvas.delete(ALL)
 	if canvas.data.startScreen: #draw start screen
 		drawStartScreen(canvas)
@@ -415,6 +425,8 @@ def init(canvas):
 	setSecondaryValues(canvas) #changes per round
 
 def setInitialValues(canvas):
+	canvas.data.fStatus=0
+	canvas.data.client=[]
 	canvas.data.name=""
 	canvas.data.nameSet=False
 	canvas.data.startScreen=True #Set to draw the starting screen
@@ -484,7 +496,6 @@ def setSecondaryValues(canvas): #for setting values that are reset after every r
 	canvas.data.path=[]  #1d array of a single path.
 	canvas.data.pathTimes=[] 
 	canvas.data.allPathTimes=[]
-
 	canvas.data.error=[]
 	canvas.data.errorMargin=[]
 	canvas.data.errorClicks=[]
@@ -541,4 +552,6 @@ def run():
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
+	canvas.data.client.close()
 run()
+
