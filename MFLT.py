@@ -197,7 +197,7 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 	if canvas.data.device=="fingers":
 		if canvas.data.client:
 			canvas.data.fStatus=canvas.data.client.run()
-			print canvas.data.fStatus
+			# print canvas.data.fStatus
 			drawFStatus(canvas)
 
 	canvas.delete(ALL)
@@ -283,7 +283,7 @@ def drawFStatus(canvas):
 		status = '   Mouse Mode'
 	else:
 		status = 'Keyboard Mode'
-
+	# print status
 	canvas.create_text(50, 50, text=status, font="Times 40", fill="black", anchor="w")
 
 ##########################################################################################################
