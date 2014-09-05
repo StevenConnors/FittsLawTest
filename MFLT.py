@@ -287,10 +287,11 @@ def drawFStatus(canvas):
 		tempColor='red'
 	else:
 		status = 'Keyboard Mode'
-
 		tempColor='blue'
 	print status
+	
 	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor, anchor="w")
+
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
@@ -447,7 +448,11 @@ def init(canvas):
 
 def setInitialValues(canvas):
 	canvas.data.fStatus=0
+<<<<<<< HEAD
 	canvas.data.client=None
+=======
+	canvas.data.client=[]
+>>>>>>> a3021eae6224585a96d229c9d2fad03a63d9d76f
 	canvas.data.name=""
 	canvas.data.nameSet=False
 	canvas.data.startScreen=True #Set to draw the starting screen
@@ -576,3 +581,7 @@ def run():
 	if canvas.client:
 		canvas.data.client.close()
 run()
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3021eae6224585a96d229c9d2fad03a63d9d76f
