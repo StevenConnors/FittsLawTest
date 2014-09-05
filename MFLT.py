@@ -134,6 +134,7 @@ def keyPressed(canvas, event):
 
 def keyTyping(canvas,event):
 	if canvas.data.fStatus=='1' and canvas.data.device=="fingers":
+		print('blocking typing')
 		return
 	if canvas.data.firstTime:
 		#gets the typing and homing time
@@ -193,14 +194,15 @@ def timerFired(canvas):
 	canvas.after(delay, f) # pause, then call timerFired again
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
+	canvas.delete(ALL)
+	
 	# Show the status of 'fingers'
 	if canvas.data.device=="fingers":
 		if canvas.data.client:
 			canvas.data.fStatus=canvas.data.client.run()
-			print canvas.data.fStatus
+			#print canvas.data.fStatus
 			drawFStatus(canvas)
 
-	canvas.delete(ALL)
 	if canvas.data.startScreen: #draw start screen
 		drawStartScreen(canvas)
 	else: #start circles
@@ -281,10 +283,13 @@ def drawTyping(canvas):
 def drawFStatus(canvas):
 	if canvas.data.fStatus == '1':
 		status = '   Mouse Mode'
+		tempColor='red'
 	else:
 		status = 'Keyboard Mode'
-
-	canvas.create_text(50, 50, text=status, font="Times 40", fill="black", anchor="w")
+		tempColor='blue'
+	print status
+	
+	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor, anchor="w")
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
@@ -359,11 +364,14 @@ def writeFiles(canvas):
 ################################################################################################################################################################
 def modifiedTimes(canvas):
     newTimes=[]
-    for i in xrange(canvas.data.numberToGo):
-        time= canvas.data.times[i]
-        for j in xrange(i+1):
-            time -= canvas.data.homingTimes[j]
-        newTimes.append(time)
+    try:
+        for i in xrange(canvas.data.numberToGo):
+            time= canvas.data.times[i]
+            for j in xrange(i+1):
+                time -= canvas.data.homingTimes[j]
+            newTimes.append(time)
+    except:
+        print('here')
     return newTimes
 ################################################################################################################################################################
 
@@ -564,6 +572,7 @@ def run():
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
-	canvas.data.client.close()
+	if canvas.client:
+		canvas.data.client.close()
 run()
 
