@@ -201,6 +201,7 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 		if canvas.data.client:
 			canvas.data.fStatus=canvas.data.client.run()
 			#print canvas.data.fStatus
+
 			drawFStatus(canvas)
 
 	if canvas.data.startScreen: #draw start screen
@@ -286,10 +287,15 @@ def drawFStatus(canvas):
 		tempColor='red'
 	else:
 		status = 'Keyboard Mode'
+<<<<<<< HEAD
 		tempColor='blue'
 	print status
 	
 	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor, anchor="w")
+=======
+	# print status
+	canvas.create_text(50, 50, text=status, font="Times 40", fill="black", anchor="w")
+>>>>>>> 66aefdb9a1f44969b482599d2581148f21449b6e
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
