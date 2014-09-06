@@ -97,7 +97,7 @@ def resetPath(canvas):
 	canvas.data.path=[]
 	canvas.data.pathTimes=[]
 	#Determine which word to type
-	canvas.data.random = random.randint(0,len(canvas.data.wordList))
+	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)
 
 def motion(canvas, event): #store in a list and then delete lk hlaf
 	if canvas.data.start: 
