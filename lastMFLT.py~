@@ -76,7 +76,7 @@ def mouseButtonPressed(canvas,event):
 		canvas.data.fingers="green"
 		canvas.data.secondTime=None
 		
-		if canvas.data.client==None:
+		if canvas.data.client==[]:
 			canvas.data.client=sC.Client('localhost',50000)
 		
 # 		c.run()
@@ -97,7 +97,7 @@ def resetPath(canvas):
 	canvas.data.path=[]
 	canvas.data.pathTimes=[]
 	#Determine which word to type
-	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)
+	canvas.data.random = random.randint(0,49)
 
 def motion(canvas, event): #store in a list and then delete lk hlaf
 	if canvas.data.start: 
@@ -106,7 +106,7 @@ def motion(canvas, event): #store in a list and then delete lk hlaf
 		elapsed=time.time()-canvas.data.time
 		canvas.data.pathTimes.append(elapsed)
 		if canvas.data.homingTime!=0:
-			canvas.data.homingTimes[canvas.data.clicks]=(time.time()-canvas.data.homingTime)
+			canvas.data.homingTimes.append(time.time()-canvas.data.homingTime)
 			canvas.data.homingTime=0
 
 def startClock(canvas):
@@ -115,7 +115,7 @@ def startClock(canvas):
 
 def keyPressed(canvas, event):
 	#While actual testing.
-	if (canvas.data.finished==False and canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
+	if (canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
 		canvas.data.start=True
 		canvas.data.startScreen=False
 		#set canvas.data.device
@@ -225,7 +225,6 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 				canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 			else: #final 
 				canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Testing Complete", font="Times 30")
-				canvas.data.finished=True
 
 def drawStartScreen(canvas):
 	if canvas.data.nameSet==False:
@@ -288,11 +287,10 @@ def drawFStatus(canvas):
 		tempColor='red'
 	else:
 		status = 'Keyboard Mode'
+
 		tempColor='blue'
 	print status
-	
 	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor, anchor="w")
-
 
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
@@ -366,16 +364,16 @@ def writeFiles(canvas):
 
 ################################################################################################################################################################
 def modifiedTimes(canvas):
-	newTimes=[]
-	try:
-		for i in xrange(canvas.data.numberToGo):
-			time= canvas.data.times[i]
-			for j in xrange(i+1):
-				time -= canvas.data.homingTimes[j]
-				newTimes.append(time)
-	except:
-		print('Error with homing times')
-	return newTimes
+    newTimes=[]
+    try:
+        for i in xrange(canvas.data.numberToGo):
+            time= canvas.data.times[i]
+            for j in xrange(i+1):
+                time -= canvas.data.homingTimes[j]
+            newTimes.append(time)
+    except:
+        print('here')
+    return newTimes
 ################################################################################################################################################################
 
 
@@ -441,13 +439,12 @@ def init(canvas):
 	canvas.data.circleWidth=10 #filler 
 	canvas.data.round=0
 	canvas.data.numberOfRounds=3
-	canvas.data.finished=False
 #condition
 	openFile(canvas)
 #set values
 	setInitialValues(canvas) #doesn't change throughotu
 	setSecondaryValues(canvas) #changes per round
-	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)#Just in case
+
 def setInitialValues(canvas):
 	canvas.data.fStatus=0
 	canvas.data.client=None
@@ -543,7 +540,7 @@ def setSecondaryValues(canvas): #for setting values that are reset after every r
 	canvas.data.pressButtons=False
  
  	canvas.data.homingTime=0
-	canvas.data.homingTimes=[0 for i in range(canvas.data.numberToGo)]
+	canvas.data.homingTimes=[]
 
 	canvas.data.buttonTime=0
 	canvas.data.buttonTimes=[]
@@ -576,6 +573,6 @@ def run():
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
-	if canvas.data.client:
+	if canvas.client!=[]	:
 		canvas.data.client.close()
 run()
