@@ -76,7 +76,7 @@ def mouseButtonPressed(canvas,event):
 		canvas.data.fingers="green"
 		canvas.data.secondTime=None
 		
-		if canvas.data.client==[]:
+		if canvas.data.client==None:
 			canvas.data.client=sC.Client('localhost',50000)
 		
 # 		c.run()
@@ -449,7 +449,6 @@ def init(canvas):
 def setInitialValues(canvas):
 	canvas.data.fStatus=0
 	canvas.data.client=None
-	canvas.data.client=[]
 	canvas.data.name=""
 	canvas.data.nameSet=False
 	canvas.data.startScreen=True #Set to draw the starting screen
@@ -575,6 +574,6 @@ def run():
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
-	if canvas.client:
+	if canvas.data.client:
 		canvas.data.client.close()
 run()
