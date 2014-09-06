@@ -6,7 +6,6 @@ import datetime
 import tkFileDialog
 import os.path
 import random
-import statusClient as sC
 
 def mousePressed(canvas, event):
 	if canvas.data.start:
@@ -30,6 +29,7 @@ def mousePressed(canvas, event):
 def successfulClick(canvas,event):
 	if (not canvas.data.errorMade): #make it so that it only checks the first error. ie multiple errors don't matter
 		canvas.data.errorMargin.append(0)
+	print(time.time()-canvas.data.temp)
 	canvas.data.errorClicks=[]
 	canvas.data.allError=[]
 	canvas.data.errorMade=0
@@ -75,11 +75,6 @@ def mouseButtonPressed(canvas,event):
 		canvas.data.trackpad=None 
 		canvas.data.fingers="green"
 		canvas.data.secondTime=None
-		
-		if canvas.data.client==[]:
-			canvas.data.client=sC.Client('localhost',50000)
-		
-# 		c.run()
 	if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
 		canvas.data.circleMouse=None
 		canvas.data.trackpad=None
@@ -97,7 +92,17 @@ def resetPath(canvas):
 	canvas.data.path=[]
 	canvas.data.pathTimes=[]
 	#Determine which word to type
-	canvas.data.random = random.randint(0,len(canvas.data.wordList))
+	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)
+# 	canvas.data.random = random.randint(0,49)
+# 	try:
+# 		canvas.data.random
+# 	except:
+# 		canvas.data.random=0
+# 	
+# 	if canvas.data.random==1:
+# 		canvas.data.random=0
+# 	else:
+# 		canvas.data.random=1	
 
 def motion(canvas, event): #store in a list and then delete lk hlaf
 	if canvas.data.start: 
@@ -108,6 +113,9 @@ def motion(canvas, event): #store in a list and then delete lk hlaf
 		if canvas.data.homingTime!=0:
 			canvas.data.homingTimes[canvas.data.clicks]=(time.time()-canvas.data.homingTime)
 			canvas.data.homingTime=0
+			canvas.data.temp=time.time()
+
+
 
 def startClock(canvas):
 	canvas.data.time=time.time()
@@ -133,9 +141,6 @@ def keyPressed(canvas, event):
 	redrawAll(canvas)
 
 def keyTyping(canvas,event):
-	if canvas.data.fStatus=='1' and canvas.data.device=="fingers":
-		print('blocking typing')
-		return
 	if canvas.data.firstTime:
 		#gets the typing and homing time
 		canvas.data.firstTime=False
@@ -195,15 +200,6 @@ def timerFired(canvas):
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 	canvas.delete(ALL)
-	
-	# Show the status of 'fingers'
-	if canvas.data.device=="fingers":
-		if canvas.data.client:
-			canvas.data.fStatus=canvas.data.client.run()
-			#print canvas.data.fStatus
-
-			drawFStatus(canvas)
-
 	if canvas.data.startScreen: #draw start screen
 		drawStartScreen(canvas)
 	else: #start circles
@@ -281,18 +277,6 @@ def drawTyping(canvas):
 	canvas.data.currentWord = canvas.data.wordList[canvas.data.random]
 	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2 - 150, text="Type: "+ canvas.data.wordList[canvas.data.random], font="Times 40", fill="black", anchor="w")
 
-def drawFStatus(canvas):
-	if canvas.data.fStatus == '1':
-		status = '   Mouse Mode'
-		tempColor='red'
-	else:
-		status = 'Keyboard Mode'
-		tempColor='blue'
-	print status
-	
-	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor, anchor="w")
-
-
 ##########################################################################################################
 ######################################   I/O Things  #####################################################
 ##########################################################################################################
@@ -365,16 +349,16 @@ def writeFiles(canvas):
 
 ################################################################################################################################################################
 def modifiedTimes(canvas):
-	newTimes=[]
-	try:
-		for i in xrange(canvas.data.numberToGo):
-			time= canvas.data.times[i]
-			for j in xrange(i+1):
-				time -= canvas.data.homingTimes[j]
-				newTimes.append(time)
-	except:
-		print('Error with homing times')
-	return newTimes
+    newTimes=[]
+    for i in xrange(canvas.data.numberToGo):
+        time= canvas.data.times[i]
+        for j in xrange(i+1):
+		try:
+            		time -= canvas.data.homingTimes[j]
+		except:
+					print 'j:{}, htSize:{}'.format(j, len(canvas.data.homingTimes))
+        newTimes.append(time)
+    return newTimes
 ################################################################################################################################################################
 
 
@@ -446,10 +430,10 @@ def init(canvas):
 	setInitialValues(canvas) #doesn't change throughotu
 	setSecondaryValues(canvas) #changes per round
 	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)#Just in case
+
+
 def setInitialValues(canvas):
-	canvas.data.fStatus=0
-	canvas.data.client=None
-	canvas.data.client=[]
+	canvas.data.temp=0
 	canvas.data.name=""
 	canvas.data.nameSet=False
 	canvas.data.startScreen=True #Set to draw the starting screen
@@ -510,6 +494,8 @@ def setInitialValues(canvas):
 		'female',
 		'woods',
 		'tree']
+		
+# 	canvas.data.random=0
 
 def setSecondaryValues(canvas): #for setting values that are reset after every round
 
@@ -519,6 +505,7 @@ def setSecondaryValues(canvas): #for setting values that are reset after every r
 	canvas.data.path=[]  #1d array of a single path.
 	canvas.data.pathTimes=[] 
 	canvas.data.allPathTimes=[]
+
 	canvas.data.error=[]
 	canvas.data.errorMargin=[]
 	canvas.data.errorClicks=[]
@@ -575,6 +562,4 @@ def run():
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
-	if canvas.client:
-		canvas.data.client.close()
 run()
