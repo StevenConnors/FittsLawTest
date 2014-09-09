@@ -14,26 +14,37 @@ for i in range(30):
 
 conditions = ['A','B','C']
 
-for i in range(30):
-    conds = []
+userNum = 32
+deviceNum = 6
+testNum = 4
+for i in range(userNum):
+    # conds = []
+    output = 'Discomfort\t'
     # Each Device
-    for k in range(10):
+    for k in range(deviceNum):
         temp = []
         # Each Test
-        for j in range(4):
+        for j in range(testNum):
             while True:
                 seq = np.random.choice(conditions, size=3, replace=False).tolist()
                 if seq not in temp:
                     break
             temp.append(seq)
-        conds.append(temp)
-    for j in range(4):
-        if j == 0:
-            output = str(i+1)
-        else:
-            output = ''
-        # Each Device
-        for k in range(10):
-            output += '\t{}{}{}'.format(conds[k][j][0], conds[k][j][1], conds[k][j][2])
-        print output
-    print ''
+            for k in seq:
+                output += k
+            output += '\t'
+        # conds.append(temp)
+        output += 'Discomfort\t'
+    print output
+        # print temp
+
+    # for j in range(testNum):
+    #     if j == 0:
+    #         output = str(i+1)
+    #     else:
+    #         output = ''
+    #     # Each Device
+    #     for k in range(deviceNum):
+    #         output += '\t{}{}{}'.format(conds[k][j][0], conds[k][j][1], conds[k][j][2])
+    #     print output
+    # print ''
