@@ -39,7 +39,7 @@ if filesPath:
       
       
       for file in allFiles:
-          #print file
+          print file
           data=dr.csvReader(file, ',', 4)
           header={}
           for i in range(len(data['header'][2])):
