@@ -8,22 +8,24 @@ import os.path
 import random
 import statusClient as sC
 
-def mousePressed(canvas, event):
-	if canvas.data.start:
-		if (canvas.data.pressButtons==False): #if first time clicking at a circle,
+def distance(x, y, cx, cy, d):
+	return (((x-cx)**2 + (y-cy)**2) <= d**2)
 
-			#on the first click, record the location
-			if canvas.data.errorMade==0:
-				canvas.data.listX.append(event.x)
-				canvas.data.listY.append(event.y)
-				canvas.data.listcX.append(canvas.data.centerX)
-				canvas.data.listcY.append(canvas.data.centerY)
-			#If correct click, 
-			if ( ((event.x-canvas.data.centerX)**2)+((event.y-canvas.data.centerY)**2)<((canvas.data.circleWidth/2)**2) ):
-				successfulClick(canvas,event)
-			else: #clicked outside of the circle
-				missedClick(canvas,event)
-	else: #so this is for the start screen, when choosing devices
+def mousePressed(canvas, event):
+	canvas.data=canvas.data
+	if (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target"): #if first time clicking at a circle,
+		#on the first click, record the location
+		if canvas.data.errorMade==0:
+			canvas.data.listX.append(event.x)
+			canvas.data.listY.append(event.y)
+			canvas.data.listcX.append(canvas.data.centerX)
+			canvas.data.listcY.append(canvas.data.centerY)
+		#If correct click, 
+		if distance(event.x,event.y,canvas.data.centerX, canvas.data.centerY, canvas.data.circleWidth):
+			successfulClick(canvas,event)
+		else: #clicked outside of the circle
+			missedClick(canvas,event)
+	elif canvas.data.STATE == "start" or canvas.data.STATE == "Name_Set": #so this is for the start screen, when choosing devices
 		mouseButtonPressed(canvas,event)
 	redrawAll(canvas)
 
@@ -34,12 +36,16 @@ def successfulClick(canvas,event):
 	canvas.data.allError=[]
 	canvas.data.errorMade=0
 	canvas.data.clicks+=1
-#Eedit: after a successful click, raise a flg forcing to type the keyboard
-	canvas.data.pressButtons=True
+#Edit: after a successful click, raise a flg forcing to type the keyboard
 	canvas.data.firstTime=True
 #this time.time is to ignore the time to press keys:
 	canvas.data.buttonTime=time.time()
-
+	if canvas.data.clicks<canvas.data.numberToGo:
+		canvas.data.STATE = "Display_Word"
+	else:
+		canvas.data.STATE = "Section_End"
+	if (canvas.data.round==canvas.data.numberOfRounds):
+		canvas.data.STATE = "Study_End"
 	recordTime(canvas)
 	resetPath(canvas)
 
@@ -53,7 +59,7 @@ def missedClick(canvas,event):
 		canvas.data.error.append(canvas.data.clicks)
 		canvas.data.errorMargin.append(errorDel)
 		canvas.data.errorClicks.append([event.x,event.y])
-		canvas.data.errorMade=1	
+		canvas.data.errorMade=1
 
 def mouseButtonPressed(canvas,event):
 	x1=550
@@ -99,8 +105,13 @@ def resetPath(canvas):
 	#Determine which word to type
 	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)
 
-def motion(canvas, event): #store in a list and then delete lk hlaf
-	if canvas.data.start: 
+def motion(canvas, event): #store in a list and then delete lk half
+	if canvas.data.STATE == "Display_Target":
+		canvas.data.STATE = "Pointing_Target"
+
+		#Start moving time measurement
+
+	if canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target":
 		x, y = event.x, event.y
 		canvas.data.path.append((x,y))
 		elapsed=time.time()-canvas.data.time
@@ -113,22 +124,26 @@ def startClock(canvas):
 	canvas.data.time=time.time()
 	canvas.data.homingTime=time.time()
 
+def allTimes(canvas):
+	if canvas.data.STATE == "Display_Target":
+		canvas.data.HomingTime = time.time()
+
+
 def keyPressed(canvas, event):
 	#While actual testing.
-	if (canvas.data.finished==False and canvas.data.start==False and canvas.data.nameSet==True and event.keysym=="space"):
+	if (canvas.data.STATE == "Name_Set" and event.keysym=="space"):
 		canvas.data.start=True
-		canvas.data.startScreen=False
-		#set canvas.data.device
 		setDeviceName(canvas)
 		startClock(canvas)
-	elif (canvas.data.start and canvas.data.pressButtons):
-#This is for typing
-		keyTyping(canvas,event)		
+		canvas.data.STATE = "Display_Target"
+		allTimes(canvas)
 #Below is for set up
-	elif (canvas.data.start==False and canvas.data.nameSet==False):
+	elif canvas.data.STATE == "start":
 		setUserName(canvas,event)
+	elif (canvas.data.STATE == "Display_Word" or canvas.data.STATE == "Typing_Word"):
+		keyTyping(canvas,event)		
 #below is if a key was accidentally pressed
-	elif (canvas.data.start==True):
+	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Typing_Target"):
 		canvas.data.keyPressed.append(canvas.data.clicks)
 	redrawAll(canvas)
 
@@ -136,9 +151,9 @@ def keyTyping(canvas,event):
 	if canvas.data.fStatus=='1' and canvas.data.device=="fingers":
 		print('blocking typing')
 		return
-	if canvas.data.firstTime:
+	if canvas.data.STATE == "Display_Word":
+		canvas.data.STATE = "Typing_Word"
 		#gets the typing and homing time
-		canvas.data.firstTime=False
 		canvas.data.buttonTimes.append(time.time()-canvas.data.buttonTime)
 		canvas.data.time+=(time.time()-canvas.data.buttonTime)
 		#should account for typingtime as well
@@ -150,13 +165,13 @@ def keyTyping(canvas,event):
 		canvas.data.typed=canvas.data.typed[:-1]
 	#check if correct word
 	if canvas.data.typed == canvas.data.currentWord:
-		canvas.data.pressButtons=False
+		canvas.data.STATE = "Display_Target"	
 		canvas.data.typingTimes.append(time.time()-canvas.data.typingTime)
 		canvas.data.time+=(time.time()-canvas.data.typingTime)
 		canvas.data.typingTime=0
 		canvas.data.typed = ""
 		canvas.data.homingTime=time.time()
-		canvas.data.listOfWords.append(canvas.data.currentWord)	
+		canvas.data.listOfWords.append(canvas.data.currentWord)
 
 def setDeviceName(canvas):
 	if canvas.data.circleMouse:
@@ -169,21 +184,18 @@ def setDeviceName(canvas):
 		canvas.data.device="2ndTime"
 
 def setUserName(canvas,event):
-	if event.keysym in string.ascii_letters:
-		canvas.data.name=canvas.data.name+event.keysym
-	elif event.keysym in string.digits:
+	if event.keysym in string.ascii_letters or event.keysym in string.digits:
 	    canvas.data.name=canvas.data.name+event.keysym
 	elif event.keysym=="space":
 		canvas.data.name=canvas.data.name+" "
 	elif event.keysym=="BackSpace":
 		canvas.data.name=canvas.data.name[:-1]
-#            print canvas.data.name
 	elif event.keysym=="Return":
-		canvas.data.nameSet=True	
+		canvas.data.STATE = "Name_Set"
 
-##########################################################################################################
-######################################  Draw Things  #####################################################
-##########################################################################################################
+################################################################################
+######################################  Draw Things  ###########################
+################################################################################
 
 def timerFired(canvas):
 	redrawAll(canvas)
@@ -195,57 +207,40 @@ def timerFired(canvas):
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 	canvas.delete(ALL)
-
 	# Show the status of 'fingers'
 	if canvas.data.device=="fingers":
 		if canvas.data.client:
 			canvas.data.fStatus=canvas.data.client.run()
-			#print canvas.data.fStatus
-
 			drawFStatus(canvas)
-
-	if canvas.data.startScreen: #draw start screen
+	if canvas.data.STATE == "start" or canvas.data.STATE == "Name_Set": #draw start screen
 		drawStartScreen(canvas)
-	else: #start circles
-		if (canvas.data.start): #if started
-			if canvas.data.clicks<canvas.data.numberToGo:  #while there's more circles to click
-				if canvas.data.pressButtons:
-					drawTyping(canvas)
-				else:
-					drawCircles(canvas)
-					drawError(canvas)
-			else: #round finished 
-				canvas.data.round+=1
-				canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
-				canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
-				sectionFinished(canvas)
-		else: #when inbetween rounds (so stopped )
-			if canvas.data.round<canvas.data.numberOfRounds: #inbetween
-				canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
-				canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
-			else: #final 
-				canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Testing Complete", font="Times 30")
-				canvas.data.finished=True
+	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target"):
+		drawCircles(canvas)
+		drawError(canvas)
+	elif (canvas.data.STATE == "Display_Word" or canvas.data.STATE == "Typing_Word"):
+		drawTyping(canvas)
+	elif canvas.data.STATE == "Section_End":
+		canvas.data.round+=1
+		canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
+		canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
+		sectionFinished(canvas)
+	elif canvas.data.STATE == "Study_End":
+		canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Testing Complete", font="Times 30")
 
 def drawStartScreen(canvas):
-	if canvas.data.nameSet==False:
+	if canvas.data.STATE=="start":
 		if canvas.data.timerCounter%4<2:
 			canvas.create_text(canvas.data.width/2, canvas.data.height/2-100,text="Name:"+canvas.data.name,font="Times 30")
 		else:
 			canvas.create_text(canvas.data.width/2, canvas.data.height/2-100,text="Name:"+canvas.data.name+"_",font="Times 30")
 	else: 
 		canvas.create_text(canvas.data.width/2, canvas.data.height/2-100,text="Name:"+canvas.data.name,font="Times 30")
-
 	canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Instructions:\n First, enter your name. Press enter when completed. \n Click the green circle", font="Times 30")
 	canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 	drawDeviceOptions(canvas)
 
-
 def drawDeviceOptions(canvas):
-	x1=550
-	y1=50
-	x2=580
-	y2=80
+	x1, y1, x2, y2=550, 50, 580,80
 	canvas.create_rectangle(x1,y1,x2,y2, fill=canvas.data.circleMouse) #mouse    
 	canvas.create_text(x2+5, y1+15, text="Mouse", font="Times 14", anchor="w")
 	canvas.create_rectangle(x1,y1+50,x2,y2+50, fill=canvas.data.trackpad) #trackpad 
@@ -278,9 +273,13 @@ def drawError(canvas):
         canvas.create_oval(x1,y1,x2,y2, fill="red")
 
 def drawTyping(canvas):
-	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2-50, text="Type: "+canvas.data.typed, font="Times 40", fill="black", anchor="w")
 	canvas.data.currentWord = canvas.data.wordList[canvas.data.random]
-	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2 - 150, text="Type: "+ canvas.data.wordList[canvas.data.random], font="Times 40", fill="black", anchor="w")
+	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2-50, \
+		text="Type: "+canvas.data.typed, font="Times 40",\
+		fill="black", anchor="w")
+	canvas.create_text(canvas.data.width/2-100, canvas.data.height/2 - 150, \
+		text="Type: "+ canvas.data.wordList[canvas.data.random], \
+		font="Times 40", fill="black", anchor="w")
 
 def drawFStatus(canvas):
 	if canvas.data.fStatus == '1':
@@ -290,13 +289,12 @@ def drawFStatus(canvas):
 		status = 'Keyboard Mode'
 		tempColor='blue'
 	print status
-	
-	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor, anchor="w")
+	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor,\
+	anchor="w")
 
-
-##########################################################################################################
-######################################   I/O Things  #####################################################
-##########################################################################################################
+################################################################################
+######################################   I/O Things  ###########################
+################################################################################
 
 #writes the files after each section
 def sectionFinished(canvas):
@@ -364,7 +362,6 @@ def writeFiles(canvas):
 		#Write body information
 	f.close()
 
-################################################################################################################################################################
 def modifiedTimes(canvas):
 	newTimes=[]
 	try:
@@ -372,12 +369,10 @@ def modifiedTimes(canvas):
 			time = canvas.data.times[i]
 			for j in xrange(i+1):
 				time -= canvas.data.homingTimes[j]
-				newTimes.append(time)
+			newTimes.append(time)
 	except:
 		print('Error with homing times')
 	return newTimes
-################################################################################################################################################################
-
 
 #check if any errors in clicking
 def checkClicked(x,canvas):
@@ -441,19 +436,19 @@ def init(canvas):
 	canvas.data.circleWidth=10 #filler 
 	canvas.data.round=0
 	canvas.data.numberOfRounds=3
-	canvas.data.finished=False
 #condition
 	openFile(canvas)
 #set values
 	setInitialValues(canvas) #doesn't change throughotu
 	setSecondaryValues(canvas) #changes per round
 	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)#Just in case
+
 def setInitialValues(canvas):
+	canvas.data.STATE = "start"
+
 	canvas.data.fStatus=0
 	canvas.data.client=None
 	canvas.data.name=""
-	canvas.data.nameSet=False
-	canvas.data.startScreen=True #Set to draw the starting screen
 	canvas.data.device=""
 	canvas.data.circleMouse=None
 	canvas.data.trackpad=None 
@@ -540,7 +535,6 @@ def setSecondaryValues(canvas): #for setting values that are reset after every r
 
 	canvas.data.typed=""
 	canvas.data.currentWord=""
-	canvas.data.pressButtons=False
  
  	canvas.data.homingTime=0
 	canvas.data.homingTimes=[0 for i in range(canvas.data.numberToGo)]
@@ -580,12 +574,4 @@ def run():
 		canvas.data.client.close()
 run()
 
-
-
-
-
-
-		
-	x = Tk().winfo_pointerx()
-	y = Tk().winfo_pointery()
 
