@@ -104,11 +104,7 @@ def resetPath(canvas):
 	canvas.data.random = random.randint(0,len(canvas.data.wordList)-1)
 
 def motion(canvas, event): #store in a list and then delete lk half
-	if canvas.data.STATE == "Display_Target":
-		canvas.data.STATE = "Pointing_Target"
-
 		#Start moving time measurement
-
 	if canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target":
 		x, y, state = event.x, event.y, canvas.data.STATE
 		canvas.data.path.append([x,y,state])
@@ -117,6 +113,9 @@ def motion(canvas, event): #store in a list and then delete lk half
 		if canvas.data.homingTime!=0:
 			canvas.data.homingTimes[canvas.data.clicks]=(time.time()-canvas.data.homingTime)
 			canvas.data.homingTime=0
+	if canvas.data.STATE == "Display_Target":
+		canvas.data.STATE = "Pointing_Target"
+
 
 def startClock(canvas):
 	canvas.data.time=time.time()
@@ -199,6 +198,21 @@ def timerFired(canvas):
 	def f():
 		timerFired(canvas) # DK: define local fn in closure
 	canvas.after(delay, f) # pause, then call timerFired again
+
+
+#def timerFired2(canvas):
+#	delay = 10 # milliseconds
+#	def g():
+#		timerFired2(canvas) # DK: define local fn in closure
+#	canvas.after(delay, g) # pause, then call timerFired again
+#	x = Tk().winfo_pointerx()
+#	y = Tk().winfo_pointery()
+#	print x, y, canvas.data.STATE
+
+#check if x y value changed
+#after 10 loops
+#Detect change, wait until 10th cycle, if no change, loop
+
 
 def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 	canvas.delete(ALL)
@@ -580,6 +594,7 @@ def run():
 	root.bind("<Key>", lambda event: keyPressed(canvas, event))
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
+#	timerFired2(canvas)
 	root.mainloop()  # This call BLOCKS (so your program waits until you close the window!)
 	if canvas.data.client:
 		canvas.data.client.close()
