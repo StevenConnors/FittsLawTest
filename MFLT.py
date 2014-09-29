@@ -586,6 +586,6 @@ run()
 
 
 		
-	x = Tk().winfo_pointerx()
-	y = Tk().winfo_pointery()
+#	x = Tk().winfo_pointerx()#
+#	y = Tk().winfo_pointery()
 

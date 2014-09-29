@@ -21,7 +21,7 @@ def mousePressed(canvas, event):
 			canvas.data.listcX.append(canvas.data.centerX)
 			canvas.data.listcY.append(canvas.data.centerY)
 		#If correct click, 
-		if distance(event.x,event.y,canvas.data.centerX, canvas.data.centerY, canvas.data.circleWidth):
+		if ( ((event.x-canvas.data.centerX)**2)+((event.y-canvas.data.centerY)**2)<((canvas.data.circleWidth/2)**2) ):
 			successfulClick(canvas,event)
 		else: #clicked outside of the circle
 			missedClick(canvas,event)
@@ -44,8 +44,6 @@ def successfulClick(canvas,event):
 		canvas.data.STATE = "Display_Word"
 	else:
 		canvas.data.STATE = "Section_End"
-	if (canvas.data.round==canvas.data.numberOfRounds):
-		canvas.data.STATE = "Study_End"
 	recordTime(canvas)
 	resetPath(canvas)
 
@@ -112,8 +110,8 @@ def motion(canvas, event): #store in a list and then delete lk half
 		#Start moving time measurement
 
 	if canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target":
-		x, y = event.x, event.y
-		canvas.data.path.append((x,y))
+		x, y, state = event.x, event.y, canvas.data.STATE
+		canvas.data.path.append([x,y,state])
 		elapsed=time.time()-canvas.data.time
 		canvas.data.pathTimes.append(elapsed)
 		if canvas.data.homingTime!=0:
@@ -124,11 +122,6 @@ def startClock(canvas):
 	canvas.data.time=time.time()
 	canvas.data.homingTime=time.time()
 
-def allTimes(canvas):
-	if canvas.data.STATE == "Display_Target":
-		canvas.data.HomingTime = time.time()
-
-
 def keyPressed(canvas, event):
 	#While actual testing.
 	if (canvas.data.STATE == "Name_Set" and event.keysym=="space"):
@@ -136,7 +129,6 @@ def keyPressed(canvas, event):
 		setDeviceName(canvas)
 		startClock(canvas)
 		canvas.data.STATE = "Display_Target"
-		allTimes(canvas)
 #Below is for set up
 	elif canvas.data.STATE == "start":
 		setUserName(canvas,event)
@@ -145,6 +137,9 @@ def keyPressed(canvas, event):
 #below is if a key was accidentally pressed
 	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Typing_Target"):
 		canvas.data.keyPressed.append(canvas.data.clicks)
+	elif (canvas.data.STATE == "Writing_Data" and event.keysym=="space"):
+		canvas.data.STATE = "Display_Target"
+		startClock(canvas)
 	redrawAll(canvas)
 
 def keyTyping(canvas,event):
@@ -224,6 +219,12 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 		canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
 		canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 		sectionFinished(canvas)
+		canvas.data.STATE = "Writing_Data"
+		if (canvas.data.round==canvas.data.numberOfRounds):
+			canvas.data.STATE = "Study_End"
+	elif canvas.data.STATE == "Writing_Data":
+		canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Section Completed", font="Times 30")
+		canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
 	elif canvas.data.STATE == "Study_End":
 		canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Testing Complete", font="Times 30")
 
@@ -344,6 +345,12 @@ def writeFiles(canvas):
 	f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word\n")
 		#write Body Header 
 	canvas.data.times= modifiedTimes(canvas)
+
+	print len(canvas.data.buttonTimes),canvas.data.buttonTimes
+	print len(canvas.data.typingTimes),canvas.data.typingTimes
+	print len(canvas.data.listOfWords),canvas.data.listOfWords
+
+
 	for x in xrange(canvas.data.numberToGo):
 		clicked=checkClicked(x, canvas)
 		key=checkKeyPressed(x,canvas)
@@ -363,6 +370,7 @@ def writeFiles(canvas):
 	f.close()
 
 def modifiedTimes(canvas):
+	print len(canvas.data.homingTimes), canvas.data.homingTimes
 	newTimes=[]
 	try:
 		for i in xrange(canvas.data.numberToGo):
@@ -404,6 +412,9 @@ def writeTracking(canvas):
 			stuff=str(timesForThisRound[i]) #time 
 			stuff=stuff+","+str(trajectory[i][0]) #x coordinate
 			stuff=stuff+","+str(trajectory[i][1]) #y coordinate
+
+			stuff=stuff+","+str(trajectory[i][2]) #State
+		
 			thing=str(x)+", "+str(stuff)+"\n"
 			f.write(thing)
 
