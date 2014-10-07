@@ -82,7 +82,7 @@ def mouseButtonPressed(canvas,event):
 		
 		if canvas.data.client==None:
 			canvas.data.client=sC.Client('localhost',50000)
-		
+
 # 		c.run()
 	if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
 		canvas.data.circleMouse=None
@@ -121,8 +121,14 @@ def startClock(canvas):
 	canvas.data.time=time.time()
 	canvas.data.homingTime=time.time()
 
+def mouseSwitch(canvas, event):
+	if canvas.data.client:
+		print "SWIIIIIIIIIIIITTTTTTTTTTTTCCCCCCCCCCCHHHHHHHHHH"
+		canvas.data.client.switch()
+
 def keyPressed(canvas, event):
 	#While actual testing.
+
 	if (canvas.data.STATE == "Name_Set" and event.keysym=="space"):
 		canvas.data.start=True
 		setDeviceName(canvas)
@@ -133,9 +139,17 @@ def keyPressed(canvas, event):
 		setUserName(canvas,event)
 	elif (canvas.data.STATE == "Display_Word" or canvas.data.STATE == "Typing_Word"):
 		keyTyping(canvas,event)		
-#below is if a key was accidentally pressed
-	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Typing_Target"):
-		canvas.data.keyPressed.append(canvas.data.clicks)
+
+
+	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target"):
+		#if click or switch, then send signal.
+		print event.keysym
+
+		if (canvas.data.client and event.keysym=="space"):
+			print "CLICKKKKKKKKKKKKKKKKKK"
+			canvas.data.client.click()
+		else:
+			canvas.data.keyPressed.append(canvas.data.clicks) ########################################################
 	elif (canvas.data.STATE == "Writing_Data" and event.keysym=="space"):
 		canvas.data.STATE = "Display_Target"
 		startClock(canvas)
@@ -219,7 +233,7 @@ def redrawAll(canvas):   # DK: redrawAll() --> redrawAll(canvas)
 	# Show the status of 'fingers'
 	if canvas.data.device=="fingers":
 		if canvas.data.client:
-			canvas.data.fStatus=canvas.data.client.run()
+			canvas.data.fStatus=canvas.data.client.run() #gets true or false
 			drawFStatus(canvas)
 	if canvas.data.STATE == "start" or canvas.data.STATE == "Name_Set": #draw start screen
 		drawStartScreen(canvas)
@@ -297,13 +311,13 @@ def drawTyping(canvas):
 		font="Times 40", fill="black", anchor="w")
 
 def drawFStatus(canvas):
-	if canvas.data.fStatus == '1':
+	if canvas.data.fStatus == 'True':
 		status = '   Mouse Mode'
 		tempColor='red'
 	else:
 		status = 'Keyboard Mode'
 		tempColor='blue'
-	print status
+	#print status
 	canvas.create_text(50, 50, text=status, font="Times 25", fill=tempColor,\
 	anchor="w")
 
@@ -533,6 +547,8 @@ def setInitialValues(canvas):
 		'tree']
 
 def setSecondaryValues(canvas): #for setting values that are reset after every round
+	canvas.data.mouseMode=0
+
 
 	canvas.data.time=0
 	canvas.data.times=[] #array of all the times it took to press the circle
@@ -591,6 +607,7 @@ def run():
 	canvas.data.height=cHeight
 	init(canvas) 
 	root.bind("<Button-1>", lambda event:mousePressed(canvas,event))
+	root.bind("<Shift-space>", lambda event: mouseSwitch(canvas, event))
 	root.bind("<Key>", lambda event: keyPressed(canvas, event))
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 

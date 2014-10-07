@@ -25,15 +25,21 @@ class Client:
     def run(self):
         """ Read from the keyboard and send this line to the server """
         self.server.send('mflt status')
-        print('received')
+        #print('received')
         data = self.server.recv(self.size)
         return data
     
+    def click(self):
+        self.server.send("click")
+
+    def switch(self):
+        self.server.send("switch")
+
     def close(self):
         self.server.close()
 #         self.server.close()
         
         
         
-        
+
         
