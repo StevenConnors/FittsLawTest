@@ -125,10 +125,16 @@ def mouseSwitch(canvas, event):
 	if canvas.data.client:
 		print "SWIIIIIIIIIIIITTTTTTTTTTTTCCCCCCCCCCCHHHHHHHHHH"
 		canvas.data.client.switch()
+		canvas.data.spaceDown = 1
+
+def spaceRelease(canvas,event):
+		canvas.data.spaceDown = 0
+
+
+
 
 def keyPressed(canvas, event):
 	#While actual testing.
-
 	if (canvas.data.STATE == "Name_Set" and event.keysym=="space"):
 		canvas.data.start=True
 		setDeviceName(canvas)
@@ -139,15 +145,12 @@ def keyPressed(canvas, event):
 		setUserName(canvas,event)
 	elif (canvas.data.STATE == "Display_Word" or canvas.data.STATE == "Typing_Word"):
 		keyTyping(canvas,event)		
-
-
 	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target"):
 		#if click or switch, then send signal.
-		print event.keysym
-
-		if (canvas.data.client and event.keysym=="space"):
+		if (canvas.data.client and event.keysym=="space" and canvas.data.fStatus == 'True' ):
 			print "CLICKKKKKKKKKKKKKKKKKK"
 			canvas.data.client.click()
+			canvas.data.spaceDown = 1
 		else:
 			canvas.data.keyPressed.append(canvas.data.clicks) ########################################################
 	elif (canvas.data.STATE == "Writing_Data" and event.keysym=="space"):
@@ -608,6 +611,7 @@ def run():
 	init(canvas) 
 	root.bind("<Button-1>", lambda event:mousePressed(canvas,event))
 	root.bind("<Shift-space>", lambda event: mouseSwitch(canvas, event))
+	root.bind("<KeyRelease-space>", lambda event: spaceRelease(canvas, event))
 	root.bind("<Key>", lambda event: keyPressed(canvas, event))
 	root.bind("<Motion>", lambda event: motion(canvas, event))
 	timerFired(canvas) 
