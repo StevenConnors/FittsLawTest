@@ -130,9 +130,6 @@ def mouseSwitch(canvas, event):
 def spaceRelease(canvas,event):
 		canvas.data.spaceDown = 0
 
-
-
-
 def keyPressed(canvas, event):
 	#While actual testing.
 	if (canvas.data.STATE == "Name_Set" and event.keysym=="space"):
@@ -147,7 +144,7 @@ def keyPressed(canvas, event):
 		keyTyping(canvas,event)		
 	elif (canvas.data.STATE == "Display_Target" or canvas.data.STATE == "Pointing_Target"):
 		#if click or switch, then send signal.
-		if (canvas.data.client and event.keysym=="space" and canvas.data.fStatus == 'True' ):
+		if (canvas.data.client and event.keysym=="space"):
 			print "CLICKKKKKKKKKKKKKKKKKK"
 			canvas.data.client.click()
 			canvas.data.spaceDown = 1
@@ -159,7 +156,7 @@ def keyPressed(canvas, event):
 	redrawAll(canvas)
 
 def keyTyping(canvas,event):
-	if canvas.data.fStatus=='1' and canvas.data.device=="fingers":
+	if canvas.data.fStatus=='True' and canvas.data.device=="fingers":
 		print('blocking typing')
 		return
 	if canvas.data.STATE == "Display_Word":
