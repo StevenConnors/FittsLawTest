@@ -607,7 +607,7 @@ def run():
 	canvas.data.height=cHeight
 	init(canvas) 
 	root.bind("<Button-1>", lambda event:mousePressed(canvas,event))
-	root.bind("<Shift-space>", lambda event: mouseSwitch(canvas, event))
+	root.bind("<Caps_Lock>", lambda event: mouseSwitch(canvas, event))
 	root.bind("<KeyRelease-space>", lambda event: spaceRelease(canvas, event))
 	root.bind("<Key>", lambda event: keyPressed(canvas, event))
 	root.bind("<Motion>", lambda event: motion(canvas, event))
