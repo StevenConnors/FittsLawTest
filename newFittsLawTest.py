@@ -48,7 +48,9 @@ def successfulClick(canvas, event):
 #this time.time is to ignore the time to press keys:
     canvas.data.buttonTime=time.time()
     if canvas.data.clicks<canvas.data.numberToGo:
-        canvas.data.STATE = "Display_Word"
+        ################################################################################################################################################
+        canvas.data.STATE = "Display_Target"
+        ################################################################################################################################################
     else:
         canvas.data.STATE = "Section_End"
     recordTime(canvas)
@@ -434,17 +436,14 @@ def writeFiles(canvas):
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
-    f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
-        #Header: subject name, configuration file used, date, 
+    if (canvas.data.device == "fingers"):
+        f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+str(canvas.data.switchKeys)+","+date+"\n\n")
+    else:
+        f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
+    #Header: subject name, configuration file used, date, 
     f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word\n")
-        #write Body Header 
+    #write Body Header 
     canvas.data.times= modifiedTimes(canvas)
-
-    print len(canvas.data.buttonTimes),canvas.data.buttonTimes
-    print len(canvas.data.typingTimes),canvas.data.typingTimes
-    print len(canvas.data.listOfWords),canvas.data.listOfWords
-
-
     for x in xrange(canvas.data.numberToGo):
         clicked=checkClicked(x, canvas)
         key=checkKeyPressed(x,canvas)
@@ -453,12 +452,12 @@ def writeFiles(canvas):
                 ('%.3f'%(canvas.data.listX[x])) +"," + ('%.3f'%(canvas.data.listY[x])) +"," + clicked +"," + \
                 key +"," + str(canvas.data.circleWidth) +"," + str(canvas.data.diameter)+"," + \
                 ('%.3f'%(canvas.data.errorMargin[x])) +"," + ('%.3f'%(canvas.data.homingTimes[x]))+"," + \
-                ('%.3f'%(canvas.data.buttonTimes[x])) +"," + ('%.3f'%(canvas.data.typingTimes[x]))+ ","+str(canvas.data.listOfWords[x])+ "\n"
+                ('%.3f'%(0)) +"," + ('%.3f'%(0))+ ","+str("N/A")+ "\n"
         else:
             stuff = str(x) + "," + ('%.3f'%(canvas.data.times[x])) +"," + ('%.3f'%(canvas.data.listcX[x])) +"," + ('%.3f'%(canvas.data.listcY[x])) +"," +\
                 ('%.3f'%(canvas.data.listX[x])) +"," + ('%.3f'%(canvas.data.listY[x])) +"," + clicked +"," + \
                 key +"," + str(canvas.data.circleWidth) +"," + str(canvas.data.diameter)+"," + \
-                ('%.3f'%(canvas.data.errorMargin[x])) +"," + ('%.3f'%(canvas.data.homingTimes[x]))+ "\n"
+                ('%.3f'%(canvas.data.errorMargin[x])) +"," + ('%.3f'%(0))+ "\n"
         f.write(stuff)
         #Write body information
     f.close()
@@ -566,7 +565,7 @@ def setInitialValues(canvas):
     canvas.data.capsLock = None 
     canvas.data.shift = None
     canvas.data.escape = None
-
+    canvas.data.switchKeys = None
 
     canvas.data.path = ""
     canvas.data.wordList = [

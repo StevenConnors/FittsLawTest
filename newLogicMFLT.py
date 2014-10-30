@@ -434,17 +434,14 @@ def writeFiles(canvas):
     f=open(savedTitle, 'w')
 #Find a way to organize data
     date = str(datetime.date.today())
-    f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
-        #Header: subject name, configuration file used, date, 
+    if (canvas.data.device == "fingers"):
+        f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+str(canvas.data.switchKeys)+","+date+"\n\n")
+    else:
+        f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
+    #Header: subject name, configuration file used, date, 
     f.write("Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word\n")
-        #write Body Header 
+    #write Body Header 
     canvas.data.times= modifiedTimes(canvas)
-
-    print len(canvas.data.buttonTimes),canvas.data.buttonTimes
-    print len(canvas.data.typingTimes),canvas.data.typingTimes
-    print len(canvas.data.listOfWords),canvas.data.listOfWords
-
-
     for x in xrange(canvas.data.numberToGo):
         clicked=checkClicked(x, canvas)
         key=checkKeyPressed(x,canvas)
@@ -566,7 +563,7 @@ def setInitialValues(canvas):
     canvas.data.capsLock = None 
     canvas.data.shift = None
     canvas.data.escape = None
-
+    canvas.data.switchKeys = None
 
     canvas.data.path = ""
     canvas.data.wordList = [
