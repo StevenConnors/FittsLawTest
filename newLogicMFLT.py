@@ -90,7 +90,7 @@ def mouseButtonPressed(canvas, event):
         canvas.data.secondTime=None
         
         if canvas.data.client==None:
-            canvas.data.client=sC.Client('localhost',50000)
+            canvas.data.client=sC.Client('localhost',50001)
     if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
         canvas.data.circleMouse=None
         canvas.data.trackpad=None
@@ -164,7 +164,6 @@ def mouseSwitch(canvas, event):
     if canvas.data.client:
         print "SWIIIIIIIIIIIITTTTTTTTTTTTCCCCCCCCCCCHHHHHHHHHH"
         canvas.data.client.switch()
-        canvas.data.spaceDown = 1
 
 def spaceRelease(canvas,event):
         canvas.data.spaceDown = 0
@@ -198,9 +197,15 @@ def keyPressed(canvas, event):
     redrawAll(canvas)
 
 def keyTyping(canvas,event):
-    if canvas.data.fStatus=='True' and canvas.data.device=="fingers":
-        print('blocking typing')
-        return
+
+    if canvas.data.device=="fingers":
+        if event.keysym==canvas.data.switchKeys:
+            mouseSwitch(canvas,event)
+        else:
+            if canvas.data.fStatus=='True':
+                print('blocking typing')
+                return
+
     if canvas.data.STATE == "Display_Word":
         canvas.data.STATE = "Typing_Word"
         #gets the typing and homing time
@@ -682,7 +687,6 @@ def run():
     canvas.data.height = cHeight
     init(canvas)
     root.bind("<Button-1>", lambda event: mousePressed(canvas, event))
-    root.bind("<Caps_Lock>", lambda event: mouseSwitch(canvas, event))
     root.bind("<KeyRelease-space>", lambda event: spaceRelease(canvas, event))
     root.bind("<Key>", lambda event: keyPressed(canvas, event))
     root.bind("<Motion>", lambda event: motion(canvas, event))

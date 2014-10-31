@@ -92,7 +92,7 @@ def mouseButtonPressed(canvas, event):
         canvas.data.secondTime=None
         
         if canvas.data.client==None:
-            canvas.data.client=sC.Client('localhost',50000)
+            canvas.data.client=sC.Client('localhost',50001)
     if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
         canvas.data.circleMouse=None
         canvas.data.trackpad=None
@@ -684,7 +684,6 @@ def run():
     canvas.data.height = cHeight
     init(canvas)
     root.bind("<Button-1>", lambda event: mousePressed(canvas, event))
-    root.bind("<Caps_Lock>", lambda event: mouseSwitch(canvas, event))
     root.bind("<KeyRelease-space>", lambda event: spaceRelease(canvas, event))
     root.bind("<Key>", lambda event: keyPressed(canvas, event))
     root.bind("<Motion>", lambda event: motion(canvas, event))
