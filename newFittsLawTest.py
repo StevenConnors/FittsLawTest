@@ -235,16 +235,6 @@ def setDeviceName(canvas):
     else:
         canvas.data.device="2ndTime"
 
-def setSwitchingKeys(canvas):
-    if canvas.data.tab:
-        canvas.data.switchKeys="Tab"
-    elif canvas.data.capsLock:
-        canvas.data.switchKeys="Control_L"
-    elif canvas.data.shift:
-        canvas.data.switchKeys="Shift_L"
-    else:
-        canvas.data.switchKeys="Escape"
-
 def setUserName(canvas,event):
     if event.keysym in string.ascii_letters or event.keysym in string.digits:
         canvas.data.name=canvas.data.name+event.keysym
@@ -321,7 +311,6 @@ def drawStartScreen(canvas):
     canvas.create_text(canvas.data.width/2, canvas.data.height/2, text="Instructions:\n First, enter your name. Press enter when completed. \n Click the green circle", font="Times 30")
     canvas.create_text(canvas.data.width/2, canvas.data.height/2+100, text="Press the spacebar to start", font="Times 30")
     drawDeviceOptions(canvas)
-    drawSwitchOptions(canvas)
 
 def drawDeviceOptions(canvas):
     x1, y1, x2, y2=550, 50, 580,80
@@ -333,17 +322,6 @@ def drawDeviceOptions(canvas):
     canvas.create_text(x2+5, y1+115, text="Fingers", font="Times 14", anchor="w")
     canvas.create_rectangle(x1,y1+150,x2,y2+150, fill=canvas.data.secondTime) #2nd time
     canvas.create_text(x2+5, y1+165, text="2nd Time", font="Times 14", anchor="w")
-
-def drawSwitchOptions(canvas):
-    x1, y1, x2, y2=50, 50, 80,80
-    canvas.create_rectangle(x1,y1,x2,y2, fill=canvas.data.tab) #mouse    
-    canvas.create_text(x2+5, y1+15, text="Tab", font="Times 14", anchor="w")
-    canvas.create_rectangle(x1,y1+50,x2,y2+50, fill=canvas.data.capsLock) #trackpad 
-    canvas.create_text(x2+5, y1+65, text="CapsLock", font="Times 14", anchor="w")
-    canvas.create_rectangle(x1,y1+100,x2,y2+100, fill=canvas.data.shift) #fingers
-    canvas.create_text(x2+5, y1+115, text="Shift", font="Times 14", anchor="w")
-    canvas.create_rectangle(x1,y1+150,x2,y2+150, fill=canvas.data.escape) #2nd time
-    canvas.create_text(x2+5, y1+165, text="Escape", font="Times 14", anchor="w")
 
 
 
@@ -560,12 +538,6 @@ def setInitialValues(canvas):
     canvas.data.trackpad = None
     canvas.data.fingers = None
     canvas.data.secondTime = None
-
-    canvas.data.tab = None 
-    canvas.data.capsLock = None 
-    canvas.data.shift = None
-    canvas.data.escape = None
-    canvas.data.switchKeys = None
 
     canvas.data.path = ""
     canvas.data.wordList = [

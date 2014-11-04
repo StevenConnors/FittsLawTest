@@ -105,26 +105,16 @@ def switchButtonPressed(canvas, event):
     y2 = 80
     if (x1<=event.x<=x2 and y1<=event.y<=y2):
         canvas.data.tab="green"
-        canvas.data.capsLock=None 
+        canvas.data.alt=None 
         canvas.data.shift=None
-        canvas.data.escape=None
     if (x1<=event.x<=x2 and y1+50<=event.y<=y2+50):
         canvas.data.tab=None
-        canvas.data.capsLock="green" 
+        canvas.data.alt="green" 
         canvas.data.shift=None
-        canvas.data.escape=None
     if (x1<=event.x<=x2 and y1+100<=event.y<=y2+100):
         canvas.data.tab=None
-        canvas.data.capsLock=None 
+        canvas.data.alt=None 
         canvas.data.shift="green"
-        canvas.data.escape=None
-    if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
-        canvas.data.tab=None
-        canvas.data.capsLock=None
-        canvas.data.shift=None
-        canvas.data.escape="green"
-
-
 
 
 def recordTime(canvas):
@@ -241,12 +231,10 @@ def setDeviceName(canvas):
 def setSwitchingKeys(canvas):
     if canvas.data.tab:
         canvas.data.switchKeys="Tab"
-    elif canvas.data.capsLock:
-        canvas.data.switchKeys="Control_L"
+    elif canvas.data.alt:
+        canvas.data.switchKeys="Alt"
     elif canvas.data.shift:
         canvas.data.switchKeys="Shift_L"
-    else:
-        canvas.data.switchKeys="Escape"
 
 def setUserName(canvas,event):
     if event.keysym in string.ascii_letters or event.keysym in string.digits:
@@ -341,12 +329,10 @@ def drawSwitchOptions(canvas):
     x1, y1, x2, y2=50, 50, 80,80
     canvas.create_rectangle(x1,y1,x2,y2, fill=canvas.data.tab) #mouse    
     canvas.create_text(x2+5, y1+15, text="Tab", font="Times 14", anchor="w")
-    canvas.create_rectangle(x1,y1+50,x2,y2+50, fill=canvas.data.capsLock) #trackpad 
-    canvas.create_text(x2+5, y1+65, text="CapsLock", font="Times 14", anchor="w")
+    canvas.create_rectangle(x1,y1+50,x2,y2+50, fill=canvas.data.alt) #trackpad 
+    canvas.create_text(x2+5, y1+65, text="Alt", font="Times 14", anchor="w")
     canvas.create_rectangle(x1,y1+100,x2,y2+100, fill=canvas.data.shift) #fingers
     canvas.create_text(x2+5, y1+115, text="Shift", font="Times 14", anchor="w")
-    canvas.create_rectangle(x1,y1+150,x2,y2+150, fill=canvas.data.escape) #2nd time
-    canvas.create_text(x2+5, y1+165, text="Escape", font="Times 14", anchor="w")
 
 
 
@@ -565,9 +551,8 @@ def setInitialValues(canvas):
     canvas.data.secondTime = None
 
     canvas.data.tab = None 
-    canvas.data.capsLock = None 
+    canvas.data.alt = None 
     canvas.data.shift = None
-    canvas.data.escape = None
     canvas.data.switchKeys = None
 
     canvas.data.path = ""
