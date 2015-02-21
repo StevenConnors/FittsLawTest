@@ -1,3 +1,4 @@
+import subprocess
 from Tkinter import *
 import math
 import time
@@ -680,6 +681,10 @@ def run():
     root.mainloop()
     if canvas.data.client:
         canvas.data.client.close()
+        
+        
+subprocess.call("/home/julian/git/ksi/accelDisable.sh",shell=True)
+        
 run()
 
 

@@ -1,3 +1,4 @@
+import subprocess
 from Tkinter import *
 import math
 import time
@@ -92,7 +93,7 @@ def mouseButtonPressed(canvas, event):
         canvas.data.secondTime=None
         
         if canvas.data.client==None:
-            canvas.data.client=sC.Client('localhost',50001)
+            canvas.data.client=sC.Client('localhost',50010)
     if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
         canvas.data.circleMouse=None
         canvas.data.trackpad=None
@@ -176,7 +177,7 @@ def keyPressed(canvas, event):
     if (canvas.data.STATE == "Name_Set" and event.keysym=="space"):
         canvas.data.start=True
         setDeviceName(canvas)
-        setSwitchingKeys(canvas)
+#         setSwitchingKeys(canvas)
         startClock(canvas)
         canvas.data.STATE = "Display_Target"
 #Below is for set up
@@ -415,7 +416,7 @@ def writeFiles(canvas):
 #Find a way to organize data
     date = str(datetime.date.today())
     if (canvas.data.device == "fingers"):
-        f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+str(canvas.data.switchKeys)+","+date+"\n\n")
+        f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
     else:
         f.write(canvas.data.name+","+str(canvas.data.configuration).strip()+","+date+"\n\n")
     #Header: subject name, configuration file used, date, 
@@ -664,6 +665,8 @@ def run():
     root.mainloop()
     if canvas.data.client:
         canvas.data.client.close()
+        
+subprocess.call("/home/julian/git/ksi/accelDisable.sh",shell=True)
 run()
 
 
