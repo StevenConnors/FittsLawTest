@@ -1,6 +1,40 @@
-import dataOps as dO
+import sys
+import Tkinter
+import tkFileDialog
 
-text='r1finger2.txt'
+from Tkinter import *
+class App(Frame):
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.pack()
 
-out=dO.alphaNumExtract(text)
-print(out)
+
+# create the application
+myapp = App()
+
+#
+# here are method calls to the window manager class
+#
+myapp.master.title("My Do-Nothing Application")
+myapp.master.maxsize(1000, 400)
+
+# start the program
+myapp.mainloop()
+
+
+
+tkObj=Tkinter.Tk()
+
+
+
+tkObj.file_opt = options = {}
+
+
+
+filesPath=tkFileDialog.askdirectory()
+
+
+
+while 1:
+    pass
+print(something)
