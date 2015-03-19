@@ -1,4 +1,4 @@
-p6r5,B,2015-02-26
+p6a5,B,2015-02-26
 
 Target#, time, targetX, targetY, clickX, clickY, clicked, keyPressed, width,distance, errorMargin, Homing Time1, Keyboard Homingtime, Typingtime, Word
 0,1.000,350.000,150.000,341.000,153.000,0,0,27,400,0.000,0.105,0.000,0.000,N/A
