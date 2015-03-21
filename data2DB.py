@@ -379,38 +379,72 @@ def insertDirectory(filename,tablename):
     
     
 if __name__=='__main__':
-    databaseName='/Users/julian/Dropbox/fingers/fingers.db'
-
-    excludeQuery='where target!= 0 and clicked!=1'
+    recalculate_rel_vs_abs=False
+    recalculate_alt_vs_tab=True
     
     
+    if recalculate_rel_vs_abs:
+        databaseName='/Users/julian/Dropbox/fingers/fingers.db'
     
-    #The next function reads all of the data 
-    #from a directory and puts it into a database
-    datatable='relative_vs_absolute' 
-#     insertDirectory(databaseName,datatable)
+        excludeQuery='where target!= 0 and clicked!=1'
+        
+        
+        
+        #The next function reads all of the data 
+        #from a directory and puts it into a database
+        datatable='relative_vs_absolute' 
+        insertDirectory(databaseName,datatable)
+        
+        
+        outputTable='outliers_sd'
+        columns2pick=['participant','trial','condition','device']
+        observations='elapsedTime'
+        
+        outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery)
+        
+        
+        outliersTable='outliers_sd'
+        dataTable='relative_vs_absolute'
+        outputTable='meansTableSD'
+        
+        
+        meansTable(databaseName,outliersTable,dataTable,outputTable)
+        
+        #The next table does not take into account outliers only missclicks
+        outputTable='errorRate'
+        errorRateTable(databaseName,dataTable,outputTable)
     
     
-    outputTable='outliers_sd'
-    columns2pick=['participant','trial','condition','device']
-    observations='elapsedTime'
+    if recalculate_alt_vs_tab:
+        databaseName='/Users/julian/Dropbox/fingers/alt_vs_tab.db'
     
-    outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery)
-    
-    
-    outliersTable='outliers_sd'
-    dataTable='relative_vs_absolute'
-    outputTable='meansTableSD'
-    
-    
-    meansTable(databaseName,outliersTable,dataTable,outputTable)
-    
-    #The next table does not take into account outliers only missclicks
-    outputTable='errorRate'
-    errorRateTable(databaseName,dataTable,outputTable)
-    
-    
-    
+        excludeQuery='where target!= 0 and clicked!=1'
+        
+        
+        
+        #The next function reads all of the data 
+        #from a directory and puts it into a database
+        datatable='alt_vs_tab' 
+        insertDirectory(databaseName,datatable)
+        
+        
+        outputTable='outliers_sd'
+        columns2pick=['participant','trial','condition','device']
+        observations='elapsedTime'
+        
+        outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery)
+        
+        
+        outliersTable='outliers_sd'
+        dataTable='alt_vs_tab'
+        outputTable='meansTableSD'
+        
+        
+        meansTable(databaseName,outliersTable,dataTable,outputTable)
+        
+        #The next table does not take into account outliers only missclicks
+        outputTable='errorRate'
+        errorRateTable(databaseName,dataTable,outputTable)
     
     print('done')
     
