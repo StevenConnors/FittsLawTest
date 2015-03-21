@@ -91,7 +91,7 @@ def mouseButtonPressed(canvas, event):
         canvas.data.secondTime=None
         
         if canvas.data.client==None:
-            canvas.data.client=sC.Client('localhost',50001)
+            canvas.data.client=sC.Client('localhost',50010)
     if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
         canvas.data.circleMouse=None
         canvas.data.trackpad=None
