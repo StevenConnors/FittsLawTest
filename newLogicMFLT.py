@@ -79,17 +79,19 @@ def mouseButtonPressed(canvas, event):
         canvas.data.trackpad=None 
         canvas.data.fingers=None
         canvas.data.secondTime=None
+        subprocess.call("/home/julian/git/ksi/noAccel.sh",shell=True)
     if (x1<=event.x<=x2 and y1+50<=event.y<=y2+50):
         canvas.data.circleMouse=None
         canvas.data.trackpad="green" 
         canvas.data.fingers=None
         canvas.data.secondTime=None
+        subprocess.call("/home/julian/git/ksi/noAccel.sh",shell=True)
     if (x1<=event.x<=x2 and y1+100<=event.y<=y2+100):
         canvas.data.circleMouse=None
         canvas.data.trackpad=None 
         canvas.data.fingers="green"
         canvas.data.secondTime=None
-        
+        subprocess.call("/home/julian/git/ksi/accelDisable.sh",shell=True)
         if canvas.data.client==None:
             canvas.data.client=sC.Client('localhost',50010)
     if (x1<=event.x<=x2 and y1+150<=event.y<=y2+150):
@@ -504,7 +506,9 @@ def writeTracking(canvas):
 
 #reads the calibration file
 def openFile(canvas):
-    file_path = tkFileDialog.askopenfilename()
+#     options={}
+#     options['initialdir'] = '~/git/FittsLawTest/testConditions'
+    file_path = tkFileDialog.askopenfilename(initialdir= '~/git/FittsLawTest/testConditions')
     canvas.data.condition = file_path
     #Set diameter and width to condition
     readFile(canvas)
@@ -559,7 +563,7 @@ def setInitialValues(canvas):
     canvas.data.path = ""
     canvas.data.wordList = [
         'candle',
-        'ceiling',
+        'watch',
         'lamp',
         'table',
         'computer',
@@ -576,38 +580,66 @@ def setInitialValues(canvas):
         'kettle',
         'backpack',
         'melon',
-        'carnegie',
-        'pittsburgh',
-        'speakers',
-        'microphone',
+        'never',
+        'rich',
+        'physics',
+        'favorite',
         'mouse',
-        'fingers',
-        'keyboard',
+        'please',
+        'schools',
         'tissue',
         'towel',
         'paper',
         'printer',
         'scanner',
         'flower',
-        'university',
+        'agree',
         'college',
-        'toothpaste',
+        'play',
         'garbage',
-        'suitcase',
+        'hair',
         'napkin',
-        'restaurant',
+        'coffee',
         'cafe',
         'gates',
         'center',
         'avenue',
         'street',
-        'government',
-        'research',
-        'sheets',
+        'wear',
+        'made',
+        'today',
         'male',
         'female',
         'woods',
-        'tree']
+        'tree',
+        'quest',
+        'trail',
+        'flick',
+        'grail',
+        'thorn',
+        'loose',
+        'hinge',
+        'trays',
+        'rusty',
+        'owed',
+        'plows',
+        'smart',
+        'snare',
+        'rails',
+        'dares',
+        'wears',
+        'lairs',
+        'liars',
+        'pails',
+        'slaps',
+        'jails',
+        'kills',
+        'flick',
+        'pokes',
+        'ruins',
+        'rakes',
+        'jewel',
+        'plead']
 
 
 def setSecondaryValues(canvas):  # for setting values that are reset every round
@@ -683,7 +715,7 @@ def run():
         canvas.data.client.close()
         
         
-subprocess.call("/home/julian/git/ksi/accelDisable.sh",shell=True)
+
         
 run()
 
