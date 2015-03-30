@@ -430,7 +430,7 @@ if __name__=='__main__':
         
         outputTable='outliers_sd'
         columns2pick=['participant','trial','condition','device']
-        observations='elapsedTime'
+        observations='homingTime'
         
         outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery)
         
