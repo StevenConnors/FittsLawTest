@@ -380,7 +380,8 @@ def insertDirectory(filename,tablename):
     
 if __name__=='__main__':
     recalculate_rel_vs_abs=False
-    recalculate_alt_vs_tab=True
+    recalculate_alt_vs_tab=False
+    recalculate_fingers_vs_all=True
     
     
     if recalculate_rel_vs_abs:
@@ -437,6 +438,38 @@ if __name__=='__main__':
         
         outliersTable='outliers_sd'
         dataTable='alt_vs_tab'
+        outputTable='meansTableSD'
+        
+        
+        meansTable(databaseName,outliersTable,dataTable,outputTable)
+        
+        #The next table does not take into account outliers only missclicks
+        outputTable='errorRate'
+        errorRateTable(databaseName,dataTable,outputTable)
+    
+    
+    if recalculate_fingers_vs_all:
+        databaseName='/Users/julian/Dropbox/fingers/fingers_vs_all.db'
+    
+        excludeQuery='where target!= 0 and clicked!=1'
+        
+        
+        
+        #The next function reads all of the data 
+        #from a directory and puts it into a database
+        datatable='fingers_vs_tab' 
+        insertDirectory(databaseName,datatable)
+        
+        
+        outputTable='outliers_sd'
+        columns2pick=['participant','trial','condition','device']
+        observations='homingTime'
+        
+        outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery)
+        
+        
+        outliersTable='outliers_sd'
+        dataTable=datatable
         outputTable='meansTableSD'
         
         
