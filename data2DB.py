@@ -79,7 +79,7 @@ def writeOutliersTable(database,outputTable,data):
     conn.close()
     
     
-def outlierDetection(database,inputTable,columns2pick,observations,outputTable,excludeQuery=None):
+def outlierDetection(database,inputTable,columns2pick,observations,outputTable,excludeQuery=None,outlierStrat='stds'):
     '''
     This function finds from the specified database and table the outliers
     In order to do that it creates blocks from the specified columns in 
@@ -171,8 +171,9 @@ def outlierDetection(database,inputTable,columns2pick,observations,outputTable,e
             
             for tempInd in range(len(data)):
 #                 if data[tempInd]<=lb or data[tempInd]>=ub:
-#                 if data[tempInd]>=ub:
-                if data[tempInd]>=std*3+mu:
+                if outlierStrat=='iqr' and data[tempInd]>=ub:
+                    outlierRows.append(rowid[tempInd])
+                if outlierStrat=='stds' and data[tempInd]>=std*3+mu:
                     outlierRows.append(rowid[tempInd])
         else:
             print('warning : empty result for query')
@@ -457,7 +458,7 @@ if __name__=='__main__':
         
         #The next function reads all of the data 
         #from a directory and puts it into a database
-        datatable='fingers_vs_tab' 
+        datatable='fingers_vs_all' 
         insertDirectory(databaseName,datatable)
         
         
@@ -465,7 +466,7 @@ if __name__=='__main__':
         columns2pick=['participant','trial','condition','device']
         observations='homingTime'
         
-        outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery)
+        outlierDetection(databaseName,datatable,columns2pick,observations,outputTable,excludeQuery,outlierStrat='iqr')
         
         
         outliersTable='outliers_sd'
