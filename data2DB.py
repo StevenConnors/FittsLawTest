@@ -369,7 +369,7 @@ def insertDirectory(filename,tablename):
                              )
                         c.execute(query)
                         conn.commit()
-                    print(tempFilename)
+#                     print(tempFilename)
                      
                      #Now here add the part where I take the file and
                      #input it to the database 
